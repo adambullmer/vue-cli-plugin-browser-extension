@@ -1,0 +1,31 @@
+{
+  "name": "vue-cli-plugin-browser-extension",
+  "version": "0.0.1",
+  "description": "Browser extension development plugin for vue-cli 3.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "eslint ."
+  },
+  "keywords": [
+    "chrome",
+    "extension",
+    "browser",
+    "plugin",
+    "vue",
+    "cli",
+    "3"
+  ],
+  "license": "GPL-3.0",
+  "repository": "git@github.com:adambullmer/vue-cli-plugin-browser-extension.git",
+  "author": "Adam Bullmer <psycodrumfreak@gmail.com>",
+  "devDependencies": {
+    "@vue/eslint-config-standard": "^3.0.0-rc.3",
+    "eslint": "^5.1.0",
+    "eslint-plugin-vue": "^4.5.0"
+  },
+  "dependencies": {
+    "@vue/cli-shared-utils": "^3.0.0-rc.3",
+    "copy-webpack-plugin": "^4.5.2",
+    "webpack-chrome-extension-reloader": "^0.8.3"
+  }
+}
