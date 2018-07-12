@@ -35,7 +35,9 @@ module.exports = (api) => {
     }
   })
 
-  api.registerCommand('ext-serve', (...args) => {
+  api.registerCommand('ext-serve', {
+    description: 'Builds and watches the project, writing the files to the output directory'
+  }, (...args) => {
     log('Starting webpack in watch mode...')
 
     api.configureWebpack((webpackConfig) => {
