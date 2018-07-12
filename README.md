@@ -36,6 +36,13 @@ I hope to be able to scaffold an app so that itentifying the below in unnecessar
    |- manifest.json
 ```
 
+## Adding to your project
+
+This can be added to your vuejs project by one of the following methods:
+
+- Using the `vue ui` and searching for this project
+- Using the vue cli `vue add browser-extension` command
+
 ## Usage
 Running the Livereload server.
 This will build and write to the local `dist` directory.
