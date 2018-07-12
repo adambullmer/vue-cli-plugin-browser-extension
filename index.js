@@ -3,17 +3,20 @@ const { log } = require('@vue/cli-shared-utils')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const ChromeExtensionReloader = require('webpack-chrome-extension-reloader')
 const WebpackShellPlugin = require('webpack-shell-plugin-next')
-const { version } = require('./package.json')
+const HtmlWebpackPlugin = require('html-webpack-plugin')
+const { name, version } = require('./package.json')
 
 module.exports = (api) => {
   api.configureWebpack(webpackConfig => {
+    webpackConfig.output.filename = '[name].js'
+    webpackConfig.output.chunkFilename = 'js/[id].[name].js?[hash:8]'
+
     delete webpackConfig.entry.app
     webpackConfig.entry.background = './src/background.js'
     webpackConfig.entry['popup/popup'] = './src/popup/popup.js'
 
     webpackConfig.plugins.push(new CopyWebpackPlugin([
-      { from: './src/icons', to: 'icons', ignore: ['icon.xcf'] },
-      { from: './src/popup/popup.html', to: 'popup/popup.html' },
+      { from: './src/icons', to: 'icons/[name].[ext]', ignore: ['icon.xcf'] },
       {
         from: './src/manifest.json',
         to: 'manifest.json',
@@ -30,6 +33,17 @@ module.exports = (api) => {
       }
     ]))
 
+    webpackConfig.plugins.push(new HtmlWebpackPlugin({
+      title: name,
+      hash: true,
+      cache: true,
+      inject: 'body',
+      filename: './popup/popup.html',
+      template: './src/popup/popup.html',
+      appMountId: 'app',
+      chunks: ['popup/popup', 'chunk-vendors']
+    }))
+
     const scriptPath = path.join(__dirname, 'scripts/remove-evals.js')
     webpackConfig.plugins.push(new WebpackShellPlugin({
       onBuildExit: {
@@ -39,9 +53,13 @@ module.exports = (api) => {
       }
     }))
 
-    if (process.env.HMR === 'true') {
+    if (process.env.NODE_ENV === 'development') {
       webpackConfig.plugins = (webpackConfig.plugins || []).concat([
-        new ChromeExtensionReloader()
+        new ChromeExtensionReloader({
+          entries: {
+            background: 'background'
+          }
+        })
       ])
     }
   })
