@@ -1,0 +1,30 @@
+{
+  "manifest_version": 2,
+  "icons": {
+    "16": "icons/16.png",
+    "48": "icons/48.png",
+    "128": "icons/128.png"
+  },
+  "name": "<%- rootOptions.projectName %>",
+  "homepage_url": "http://localhost/",
+  "description": "A Vue Browser Extension",
+  "version": "1.0",
+  "permissions": ["activeTab", "http://*/*", "https://*/*"],
+  "background": {
+    "scripts": ["background.js"],
+    "persistent": false
+  },
+  "browser_action": {
+    "default_title": "<%- rootOptions.projectName %>",
+    "default_icon": {
+      "19": "icons/19.png",
+      "38": "icons/38.png"
+    },
+    "default_popup": "popup/popup.html"
+  },
+  "background": {
+    "scripts": [
+      "background.js"
+    ]
+  }
+}
