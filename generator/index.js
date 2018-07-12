@@ -2,7 +2,7 @@ module.exports = (api, { config }) => {
   const eslintConfig = { env: { webextensions: true } }
   const pkg = {
     scripts: {
-      'ext-serve': 'vue-cli-service ext-serve'
+      'ext-serve': 'vue-cli-service ext-serve --mode development'
     },
     dependencies: {
       'vue-router': '^3.0.1',

@@ -1,6 +1,8 @@
+const path = require('path')
 const { log } = require('@vue/cli-shared-utils')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const ChromeExtensionReloader = require('webpack-chrome-extension-reloader')
+const WebpackShellPlugin = require('webpack-shell-plugin-next')
 const { version } = require('./package.json')
 
 module.exports = (api) => {
@@ -27,6 +29,15 @@ module.exports = (api) => {
         }
       }
     ]))
+
+    const scriptPath = path.join(__dirname, 'scripts/remove-evals.js')
+    webpackConfig.plugins.push(new WebpackShellPlugin({
+      onBuildExit: {
+        scripts: [`node ${scriptPath}`],
+        blocking: true,
+        parallel: false
+      }
+    }))
 
     if (process.env.HMR === 'true') {
       webpackConfig.plugins = (webpackConfig.plugins || []).concat([
