@@ -4,7 +4,7 @@ const CopyWebpackPlugin = require('copy-webpack-plugin')
 const ChromeExtensionReloader = require('webpack-chrome-extension-reloader')
 const WebpackShellPlugin = require('webpack-shell-plugin-next')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
-const { name, version } = require('./package.json')
+const { name, version } = require(path.join(process.cwd(), 'package.json'))
 
 module.exports = (api) => {
   api.configureWebpack(webpackConfig => {
