@@ -1,10 +1,14 @@
 const path = require('path')
+const fs = require('fs')
+const { exec } = require('child_process')
+const isProduction = process.env.NODE_ENV === 'production'
+const appRootPath = process.cwd()
 const { log } = require('@vue/cli-shared-utils')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const ChromeExtensionReloader = require('webpack-chrome-extension-reloader')
 const WebpackShellPlugin = require('webpack-shell-plugin-next')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
-const { name, version } = require(path.join(process.cwd(), 'package.json'))
+const { name, version } = require(path.join(appRootPath, 'package.json'))
 
 module.exports = (api) => {
   api.configureWebpack(webpackConfig => {
@@ -15,20 +19,43 @@ module.exports = (api) => {
     webpackConfig.entry.background = './src/background.js'
     webpackConfig.entry['popup/popup'] = './src/popup/popup.js'
 
+    if (isProduction) {
+      webpackConfig.plugins.push(new CopyWebpackPlugin([{ from: './key.pem', to: 'key.pem' }]))
+    }
+
     webpackConfig.plugins.push(new CopyWebpackPlugin([
       { from: './src/icons', to: 'icons/[name].[ext]', ignore: ['icon.xcf'] },
       {
         from: './src/manifest.json',
         to: 'manifest.json',
         transform: (content) => {
-          const jsonContent = JSON.parse(content)
-          jsonContent.version = version
+          return new Promise((resolve, reject) => {
+            const jsonContent = JSON.parse(content)
+            jsonContent.version = version
 
-          if (process.env.NODE_ENV === 'development') {
-            jsonContent['content_security_policy'] = "script-src 'self' 'unsafe-eval'; object-src 'self'"
-          }
+            if (isProduction) {
+              return resolve(JSON.stringify(jsonContent, null, 2))
+            }
 
-          return JSON.stringify(jsonContent, null, 2)
+            jsonContent.content_security_policy = "script-src 'self' 'unsafe-eval'; object-src 'self'"
+
+            try {
+              const keyfile = path.join(appRootPath, 'key.pem')
+              fs.statSync(keyfile)
+
+              return exec(`openssl rsa -in ${keyfile} -pubout -outform DER | openssl base64 -A`, (error, stdout) => {
+                if (error) {
+                  // node couldn't execute the command
+                  reject(error)
+                }
+
+                jsonContent.key = stdout
+                resolve(JSON.stringify(jsonContent, null, 2))
+              })
+            } catch (error) {
+              console.log('No key.pem file found. This is fine for dev, you will have problems publishing without one')
+            }
+          })
         }
       }
     ]))
