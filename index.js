@@ -1,16 +1,20 @@
 const path = require('path')
 const fs = require('fs')
 const { exec } = require('child_process')
-const isProduction = process.env.NODE_ENV === 'production'
-const appRootPath = process.cwd()
 const { log } = require('@vue/cli-shared-utils')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const ChromeExtensionReloader = require('webpack-chrome-extension-reloader')
 const WebpackShellPlugin = require('webpack-shell-plugin-next')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
-const { name, version } = require(path.join(appRootPath, 'package.json'))
+
+const appRootPath = process.cwd()
 
 module.exports = (api) => {
+  const { name, version } = require(path.join(appRootPath, 'package.json'))
+  const isDevelopment = api.service.mode === 'development'
+  const isProduction = api.service.mode === 'production'
+  const packageScript = isProduction ? 'build-zip.js' : 'remove-evals.js'
+
   api.configureWebpack(webpackConfig => {
     webpackConfig.output.filename = '[name].js'
     webpackConfig.output.chunkFilename = 'js/[id].[name].js?[hash:8]'
@@ -71,16 +75,15 @@ module.exports = (api) => {
       chunks: ['popup/popup', 'chunk-vendors']
     }))
 
-    const scriptPath = path.join(__dirname, 'scripts/remove-evals.js')
     webpackConfig.plugins.push(new WebpackShellPlugin({
       onBuildExit: {
-        scripts: [`node ${scriptPath}`],
+        scripts: [`node ${path.join(__dirname, 'scripts', packageScript)}`],
         blocking: true,
         parallel: false
       }
     }))
 
-    if (process.env.NODE_ENV === 'development') {
+    if (isDevelopment) {
       webpackConfig.plugins = (webpackConfig.plugins || []).concat([
         new ChromeExtensionReloader({
           entries: {

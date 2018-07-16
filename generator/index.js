@@ -1,6 +1,7 @@
 module.exports = (api, { config }) => {
   const eslintConfig = { env: { webextensions: true } }
   const pkg = {
+    private: true,
     scripts: {
       'ext-serve': 'vue-cli-service ext-serve --mode development'
     },
