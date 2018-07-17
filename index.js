@@ -1,7 +1,7 @@
 const path = require('path')
 const fs = require('fs')
 const { exec } = require('child_process')
-const { log } = require('@vue/cli-shared-utils')
+const logger = require('@vue/cli-shared-utils')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const ChromeExtensionReloader = require('webpack-chrome-extension-reloader')
 const WebpackShellPlugin = require('webpack-shell-plugin-next')
@@ -13,9 +13,10 @@ module.exports = (api) => {
   const { name, version } = require(path.join(appRootPath, 'package.json'))
   const isDevelopment = api.service.mode === 'development'
   const isProduction = api.service.mode === 'production'
+  const outputDir = api.resolve(api.service.projectOptions.outputDir || 'dist')
   const packageScript = isProduction ? 'build-zip.js' : 'remove-evals.js'
 
-  api.configureWebpack(webpackConfig => {
+  api.configureWebpack((webpackConfig) => {
     webpackConfig.output.filename = '[name].js'
     webpackConfig.output.chunkFilename = 'js/[id].[name].js?[hash:8]'
 
@@ -57,7 +58,11 @@ module.exports = (api) => {
                 resolve(JSON.stringify(jsonContent, null, 2))
               })
             } catch (error) {
-              console.log('No key.pem file found. This is fine for dev, you will have problems publishing without one')
+              if (isProduction) {
+                logger.error('no key.pem file found. You cannot publish to the chrome store without one. If this is your first publish, chrome will make a key for you, and you can ignore this message')
+              } else {
+                logger.warn('No key.pem file found. This is fine for dev, however you may have problems publishing without one')
+              }
             }
           })
         }
@@ -77,7 +82,7 @@ module.exports = (api) => {
 
     webpackConfig.plugins.push(new WebpackShellPlugin({
       onBuildExit: {
-        scripts: [`node ${path.join(__dirname, 'scripts', packageScript)}`],
+        scripts: [`node ${path.join(__dirname, 'scripts', packageScript)} ${outputDir}`],
         blocking: true,
         parallel: false
       }
@@ -92,17 +97,5 @@ module.exports = (api) => {
         })
       ])
     }
-  })
-
-  api.registerCommand('ext-serve', {
-    description: 'Builds and watches the project, writing the files to the output directory'
-  }, (...args) => {
-    log('Starting webpack in watch mode...')
-
-    api.configureWebpack((webpackConfig) => {
-      webpackConfig.watch = true
-    })
-
-    api.service.run('build', ...args)
   })
 }

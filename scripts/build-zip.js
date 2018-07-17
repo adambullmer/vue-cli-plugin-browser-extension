@@ -5,8 +5,8 @@ const path = require('path')
 const zipFolder = require('zip-folder')
 
 const appRootPath = process.cwd()
-const DEST_DIR = path.join(appRootPath, 'dist')
-const DEST_ZIP_DIR = path.join(appRootPath, 'dist-zip')
+const DEST_DIR = process.argv[2]
+const DEST_ZIP_DIR = path.join(appRootPath, `${DEST_DIR}-zip`)
 const { name, version } = require(path.join(appRootPath, 'package.json'))
 
 const makeDestZipDirIfNotExists = () => {

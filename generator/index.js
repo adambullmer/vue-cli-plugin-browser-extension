@@ -1,9 +1,18 @@
+const fs = require('fs')
+const gitignoreSnippet = `
+# Vue Browser Extension Output
+*.pem
+*.pub
+*.zip
+/dist-zip
+`
+
 module.exports = (api, { config }) => {
   const eslintConfig = { env: { webextensions: true } }
   const pkg = {
     private: true,
     scripts: {
-      'ext-serve': 'vue-cli-service ext-serve --mode development'
+      'serve': 'vue-cli-service build --mode development --watch'
     },
     dependencies: {
       'vue-router': '^3.0.1',
@@ -18,4 +27,9 @@ module.exports = (api, { config }) => {
 
   api.extendPackage(pkg)
   api.render('./template')
+
+  api.onCreateComplete(() => {
+    const gitignore = fs.readFileSync(api.resolve('./.gitignore'), 'utf8')
+    fs.writeFileSync(api.resolve('./.gitignore'), gitignore + gitignoreSnippet)
+  })
 }
