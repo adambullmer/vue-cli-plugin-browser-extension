@@ -46,11 +46,13 @@ This can be added to your vuejs project by one of the following methods:
 ## Usage
 Running the Livereload server.
 This will build and write to the local `dist` directory.
+This plugin will respect the `outputDir` setting, however it cannot read into passed CLI args, so if you require a custom output dir, be sure to add it in your `vue.config.js` file.
 You can then add this as an unpacked plugin to your browser, and will continue to update as you make changes.
 **NOTE:** you cannot get HMR support in the popup window, however, closing and reopening will refresh your content.
 
 ```sh
-yarn ext-serve
+yarn serve
+yarn build
 ```
 
 
@@ -62,15 +64,14 @@ yarn test
 ```
 
 ## Roadmap
-- Add generators for background.js, popup, vuex, and vue-router stuff. (Make startup a breeze)
 - Add some generator options for other pieces of browser extensions. This includes scaffolding the components/dirs, and registering the build options into the build time hooks.
   - Dev Tools
   - Dedicated extension pages
   - Options Pages
   - Content scripts
-- Add zipping to the bundle for production builds
 - More configurability in scaffolding, like Kocal/vue-web-extension does
 - A preset
+- Key Generation
 
 ## Credits
 - [https://github.com/Kocal/vue-web-extension](https://github.com/Kocal/vue-web-extension) For inspiration on app and build structure

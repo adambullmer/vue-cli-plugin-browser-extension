@@ -2,7 +2,7 @@
 
 const path = require('path')
 const fs = require('fs')
-const BUNDLE_DIR = 'dist'
+const BUNDLE_DIR = process.argv[2]
 const bundles = [
   'background.js',
   'popup/popup.js'
