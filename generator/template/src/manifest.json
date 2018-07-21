@@ -21,10 +21,5 @@
       "38": "icons/38.png"
     },
     "default_popup": "popup/popup.html"
-  },
-  "background": {
-    "scripts": [
-      "background.js"
-    ]
   }
 }
