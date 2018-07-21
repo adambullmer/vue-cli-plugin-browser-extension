@@ -21,6 +21,10 @@ I hope to be able to scaffold an app so that identifying the below in unnecessar
       |- Static assets in use in your app, like logo.png
    |- icons/
       |- Icons for your extension. Should include a 16, 19, 38, 48, 128 px square image
+   |- options/ (asked during project generation)
+      |- App.vue
+      |- options.html
+      |- options.js
    |- popup/
       |- router/
          |- pages/
@@ -73,7 +77,6 @@ yarn test
 - Add some generator options for other pieces of browser extensions. This includes scaffolding the components/dirs, and registering the build options into the build time hooks.
   - Dev Tools
   - Dedicated extension pages
-  - Options Pages
   - Content scripts
 - More configurability in scaffolding, like [Kocal/vue-web-extension](https://github.com/Kocal/vue-web-extension) does
 - A preset

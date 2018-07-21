@@ -15,6 +15,7 @@ module.exports = (api) => {
   const isProduction = api.service.mode === 'production'
   const outputDir = api.resolve(api.service.projectOptions.outputDir || 'dist')
   const packageScript = isProduction ? 'build-zip.js' : 'remove-evals.js'
+  const hasOptionsPageEntry = fs.existsSync(api.resolve('./src/options/options.js'))
 
   api.configureWebpack((webpackConfig) => {
     webpackConfig.output.filename = '[name].js'
@@ -23,6 +24,10 @@ module.exports = (api) => {
     delete webpackConfig.entry.app
     webpackConfig.entry.background = './src/background.js'
     webpackConfig.entry['popup/popup'] = './src/popup/popup.js'
+
+    if (hasOptionsPageEntry) {
+      webpackConfig.entry['options/options'] = './src/options/options.js'
+    }
 
     if (isProduction) {
       webpackConfig.plugins.push(new CopyWebpackPlugin([{ from: './key.pem', to: 'key.pem' }]))
@@ -79,6 +84,19 @@ module.exports = (api) => {
       appMountId: 'app',
       chunks: ['popup/popup', 'chunk-vendors']
     }))
+
+    if (hasOptionsPageEntry) {
+      webpackConfig.plugins.push(new HtmlWebpackPlugin({
+        title: name,
+        hash: true,
+        cache: true,
+        inject: 'body',
+        filename: './options/options.html',
+        template: './src/options/options.html',
+        appMountId: 'app',
+        chunks: ['options/options', 'chunk-vendors']
+      }))
+    }
 
     webpackConfig.plugins.push(new WebpackShellPlugin({
       onBuildExit: {
