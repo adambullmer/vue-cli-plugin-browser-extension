@@ -10,7 +10,7 @@ This new command is only for running a livereload server while testing out your 
 This removes the entrypoint of `main.js`, and as such will not scaffold a general vue app.
 That behavior might change when support for a standalone tab application exists, but for now it is gone.
 
-Packaging and deploying will still be done with `yarn build` and zipping in up for chrome, firefox, or whichever other browser you wish to develop for.
+Packaging and deploying will still be done with `yarn build` and zipping in up for Chrome, Firefox, or whichever other browser you wish to develop for.
 
 It makes some assumptions about your project setup.
 I hope to be able to scaffold an app so that identifying the below in unnecessary.
