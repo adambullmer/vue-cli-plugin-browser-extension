@@ -7,7 +7,7 @@ const gitignoreSnippet = `
 /dist-zip
 `
 
-module.exports = (api, { config, optionsPage }) => {
+module.exports = (api, options) => {
   const eslintConfig = { env: { webextensions: true } }
   const pkg = {
     private: true,
@@ -26,13 +26,10 @@ module.exports = (api, { config, optionsPage }) => {
   }
 
   api.extendPackage(pkg)
-  api.render('./template/src/manifest.json')
-  api.render('./template/src/background.js')
-  api.render('./template/src/popup')
-  api.render('./template/src/store')
+  api.render('./template/base-app', { ...options })
 
-  if (optionsPage) {
-    api.render('./template/src/options')
+  if (options.optionsPage) {
+    api.render('./template/options', { ...options })
   }
 
   api.onCreateComplete(() => {
