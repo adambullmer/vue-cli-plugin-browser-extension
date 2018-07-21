@@ -69,7 +69,7 @@ yarn test
   - Dedicated extension pages
   - Options Pages
   - Content scripts
-- More configurability in scaffolding, like Kocal/vue-web-extension does
+- More configurability in scaffolding, like [Kocal/vue-web-extension](https://github.com/Kocal/vue-web-extension) does
 - A preset
 - Key Generation
 
