@@ -21,9 +21,9 @@
       "38": "icons/38.png"
     },
     "default_popup": "popup/popup.html"
-  }<%_ if (options.optionsPage) { _%>,
+  }<% if (options.optionsPage) { %>,
   "options_ui": {
     "page": "options/options.html",
     "chrome_style": true
-  }<%_ } _%>
+  }<% } %>
 }
