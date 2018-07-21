@@ -7,7 +7,7 @@ const gitignoreSnippet = `
 /dist-zip
 `
 
-module.exports = (api, { config }) => {
+module.exports = (api, { config, optionsPage }) => {
   const eslintConfig = { env: { webextensions: true } }
   const pkg = {
     private: true,
@@ -26,7 +26,14 @@ module.exports = (api, { config }) => {
   }
 
   api.extendPackage(pkg)
-  api.render('./template')
+  api.render('./template/src/manifest.json')
+  api.render('./template/src/background.js')
+  api.render('./template/src/popup')
+  api.render('./template/src/store')
+
+  if (optionsPage) {
+    api.render('./template/src/options')
+  }
 
   api.onCreateComplete(() => {
     const gitignore = fs.readFileSync(api.resolve('./.gitignore'), 'utf8')

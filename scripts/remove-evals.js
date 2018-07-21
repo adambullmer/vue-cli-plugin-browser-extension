@@ -5,7 +5,8 @@ const fs = require('fs')
 const BUNDLE_DIR = process.argv[2]
 const bundles = [
   'background.js',
-  'popup/popup.js'
+  'popup/popup.js',
+  'options/options.js' // TODO: find a way to generate « bundles » array dynamically
 ]
 
 const evalRegexForProduction = /;([a-z])=function\(\){return this}\(\);try{\1=\1\|\|Function\("return this"\)\(\)\|\|\(0,eval\)\("this"\)}catch\(t\){"object"==typeof window&&\(\1=window\)}/g
