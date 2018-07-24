@@ -6,6 +6,7 @@ const CopyWebpackPlugin = require('copy-webpack-plugin')
 const ChromeExtensionReloader = require('webpack-chrome-extension-reloader')
 const WebpackShellPlugin = require('webpack-shell-plugin-next')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
+const ZipPlugin = require('zip-webpack-plugin')
 
 const appRootPath = process.cwd()
 
@@ -14,7 +15,7 @@ module.exports = (api) => {
   const isDevelopment = api.service.mode === 'development'
   const isProduction = api.service.mode === 'production'
   const outputDir = api.resolve(api.service.projectOptions.outputDir || 'dist')
-  const packageScript = isProduction ? 'build-zip.js' : 'remove-evals.js'
+  const packageScript = isProduction ? null : 'remove-evals.js'
   const hasOptionsPageEntry = fs.existsSync(api.resolve('./src/options/options.js'))
   const hasKeyFile = fs.existsSync(api.resolve('key.pem'))
 
@@ -103,13 +104,20 @@ module.exports = (api) => {
       }))
     }
 
-    webpackConfig.plugins.push(new WebpackShellPlugin({
-      onBuildExit: {
-        scripts: [`node ${path.join(__dirname, 'scripts', packageScript)} ${outputDir}`],
-        blocking: true,
-        parallel: false
-      }
-    }))
+    if (packageScript === null) {
+      webpackConfig.plugins.push(new ZipPlugin({
+        path: api.resolve(`${api.service.projectOptions.outputDir || 'dist'}-zip`),
+        filename: `${name}-v${version}.zip`
+      }))
+    } else {
+      webpackConfig.plugins.push(new WebpackShellPlugin({
+        onBuildExit: {
+          scripts: [`node ${path.join(__dirname, 'scripts', packageScript)} ${outputDir}`],
+          blocking: true,
+          parallel: false
+        }
+      }))
+    }
 
     if (isDevelopment) {
       webpackConfig.plugins = (webpackConfig.plugins || []).concat([
