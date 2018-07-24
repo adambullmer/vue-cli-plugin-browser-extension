@@ -1,6 +1,6 @@
 {
   "name": "vue-cli-plugin-browser-extension",
-  "version": "0.6.1",
+  "version": "0.6.2",
   "description": "Browser extension development plugin for vue-cli 3.0",
   "main": "index.js",
   "scripts": {
@@ -30,6 +30,7 @@
     "webpack": "^4.16.0",
     "webpack-chrome-extension-reloader": "^0.8.3",
     "webpack-shell-plugin-next": "https://github.com/adambullmer/webpack-shell-plugin-next.git",
-    "zip-folder": "^1.0.0"
+    "zip-folder": "^1.0.0",
+    "zip-webpack-plugin": "^3.0.0"
   }
 }
