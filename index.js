@@ -74,6 +74,7 @@ module.exports = (api) => {
               } else {
                 logger.warn('No key.pem file found. This is fine for dev, however you may have problems publishing without one')
               }
+              resolve(JSON.stringify(jsonContent, null, 2))
             }
           })
         }
