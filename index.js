@@ -5,7 +5,6 @@ const logger = require('@vue/cli-shared-utils')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const ChromeExtensionReloader = require('webpack-chrome-extension-reloader')
 const WebpackShellPlugin = require('webpack-shell-plugin-next')
-const HtmlWebpackPlugin = require('html-webpack-plugin')
 const ZipPlugin = require('zip-webpack-plugin')
 
 const appRootPath = process.cwd()
@@ -16,7 +15,6 @@ module.exports = (api) => {
   const isProduction = api.service.mode === 'production'
   const outputDir = api.resolve(api.service.projectOptions.outputDir || 'dist')
   const packageScript = isProduction ? null : 'remove-evals.js'
-  const hasOptionsPageEntry = fs.existsSync(api.resolve('./src/options/options.js'))
   const hasKeyFile = fs.existsSync(api.resolve('key.pem'))
 
   api.configureWebpack((webpackConfig) => {
@@ -25,11 +23,6 @@ module.exports = (api) => {
 
     delete webpackConfig.entry.app
     webpackConfig.entry.background = './src/background.js'
-    webpackConfig.entry['popup/popup'] = './src/popup/popup.js'
-
-    if (hasOptionsPageEntry) {
-      webpackConfig.entry['options/options'] = './src/options/options.js'
-    }
 
     if (isProduction) {
       if (hasKeyFile) {
@@ -80,30 +73,6 @@ module.exports = (api) => {
         }
       }
     ]))
-
-    webpackConfig.plugins.push(new HtmlWebpackPlugin({
-      title: name,
-      hash: true,
-      cache: true,
-      inject: 'body',
-      filename: './popup/popup.html',
-      template: './src/popup/popup.html',
-      appMountId: 'app',
-      chunks: ['popup/popup', 'chunk-vendors']
-    }))
-
-    if (hasOptionsPageEntry) {
-      webpackConfig.plugins.push(new HtmlWebpackPlugin({
-        title: name,
-        hash: true,
-        cache: true,
-        inject: 'body',
-        filename: './options/options.html',
-        template: './src/options/options.html',
-        appMountId: 'app',
-        chunks: ['options/options', 'chunk-vendors']
-      }))
-    }
 
     if (packageScript === null) {
       webpackConfig.plugins.push(new ZipPlugin({

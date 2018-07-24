@@ -19,6 +19,14 @@ module.exports = (api, options) => {
       'vuex': '^3.0.1'
     }
   }
+  const renderConfig = {
+    pages: {
+      'popup/popup': {
+        entry: 'src/popup/popup.js',
+        title: 'Popup'
+      }
+    }
+  }
 
   if (api.hasPlugin('eslint')) {
     console.log('Adding eslint config stuffs')
@@ -30,7 +38,16 @@ module.exports = (api, options) => {
 
   if (options.optionsPage) {
     api.render('./template/options', { ...options })
+
+    renderConfig.pages['options/options'] = {
+      entry: 'src/options/options.js',
+      title: 'Options'
+    }
   }
+
+  api.render((files) => {
+    files['vue.config.js'] = api.genJSConfig(renderConfig)
+  })
 
   api.onCreateComplete(() => {
     const gitignore = fs.readFileSync(api.resolve('./.gitignore'), 'utf8')
