@@ -16,6 +16,7 @@ module.exports = (api) => {
   const outputDir = api.resolve(api.service.projectOptions.outputDir || 'dist')
   const packageScript = isProduction ? 'build-zip.js' : 'remove-evals.js'
   const hasOptionsPageEntry = fs.existsSync(api.resolve('./src/options/options.js'))
+  const hasKeyFile = fs.existsSync(api.resolve('key.pem'))
 
   api.configureWebpack((webpackConfig) => {
     webpackConfig.output.filename = '[name].js'
@@ -30,7 +31,11 @@ module.exports = (api) => {
     }
 
     if (isProduction) {
-      webpackConfig.plugins.push(new CopyWebpackPlugin([{ from: './key.pem', to: 'key.pem' }]))
+      if (hasKeyFile) {
+        webpackConfig.plugins.push(new CopyWebpackPlugin([{ from: './key.pem', to: 'key.pem' }]))
+      } else {
+        logger.warn('No `key.pem` file detected. This is problematic only if you are publishing an existing extension')
+      }
     }
 
     webpackConfig.plugins.push(new CopyWebpackPlugin([
