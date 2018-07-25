@@ -9,7 +9,11 @@
   "homepage_url": "http://localhost/",
   "description": "A Vue Browser Extension",
   "version": "1.0",
-  "permissions": ["<all_urls>", "*://*/*"],
+  "permissions": [
+    "<all_urls>",
+    "*://*/*"<% if (options.contentScript) { %>,
+    "activeTab"<% } %>
+  ],
   "background": {
     "scripts": ["background.js"],
     "persistent": false

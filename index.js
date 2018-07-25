@@ -17,13 +17,20 @@ module.exports = (api) => {
   const keyFile = api.resolve('key.pem')
   const hasKeyFile = fs.existsSync(keyFile)
   const backgroundFile = api.resolve('src/background.js')
+  const contentScriptFile = api.resolve('src/content-script.js')
   const hasBackgroundFile = fs.existsSync(backgroundFile)
+  const hasContentScriptFile = fs.existsSync(contentScriptFile)
 
   api.chainWebpack((webpackConfig) => {
     webpackConfig.entryPoints.delete('app').end()
       .when(hasBackgroundFile, (config) => {
         config.entry('background')
           .add(backgroundFile)
+          .end()
+      })
+      .when(hasContentScriptFile, (config) => {
+        config.entry('content-script')
+          .add(contentScriptFile)
           .end()
       })
   })
@@ -96,6 +103,9 @@ module.exports = (api) => {
       const entries = {}
       if (hasBackgroundFile) {
         entries.background = 'background'
+      }
+      if (hasContentScriptFile) {
+        entries.contentScript = 'content-script'
       }
 
       webpackConfig.plugins.push(new ChromeExtensionReloader({ entries }))

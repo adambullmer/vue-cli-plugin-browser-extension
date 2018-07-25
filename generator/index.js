@@ -49,6 +49,10 @@ module.exports = (api, options) => {
     }
   }
 
+  if (options.contentScript) {
+    api.render('./template/content-script', { ...options })
+  }
+
   api.render((files) => {
     files['vue.config.js'] = api.genJSConfig(renderConfig)
   })
