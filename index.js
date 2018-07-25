@@ -7,26 +7,34 @@ const ChromeExtensionReloader = require('webpack-chrome-extension-reloader')
 const WebpackShellPlugin = require('webpack-shell-plugin-next')
 const ZipPlugin = require('zip-webpack-plugin')
 
-const appRootPath = process.cwd()
-
 module.exports = (api) => {
+  const appRootPath = api.getCwd()
   const { name, version } = require(path.join(appRootPath, 'package.json'))
   const isDevelopment = api.service.mode === 'development'
   const isProduction = api.service.mode === 'production'
   const outputDir = api.resolve(api.service.projectOptions.outputDir || 'dist')
   const packageScript = isProduction ? null : 'remove-evals.js'
-  const hasKeyFile = fs.existsSync(api.resolve('key.pem'))
+  const keyFile = api.resolve('key.pem')
+  const hasKeyFile = fs.existsSync(keyFile)
+  const backgroundFile = api.resolve('src/background.js')
+  const hasBackgroundFile = fs.existsSync(backgroundFile)
+
+  api.chainWebpack((webpackConfig) => {
+    webpackConfig.entryPoints.delete('app').end()
+      .when(hasBackgroundFile, (config) => {
+        config.entry('background')
+          .add(backgroundFile)
+          .end()
+      })
+  })
 
   api.configureWebpack((webpackConfig) => {
     webpackConfig.output.filename = '[name].js'
     webpackConfig.output.chunkFilename = 'js/[id].[name].js?[hash:8]'
 
-    delete webpackConfig.entry.app
-    webpackConfig.entry.background = './src/background.js'
-
     if (isProduction) {
       if (hasKeyFile) {
-        webpackConfig.plugins.push(new CopyWebpackPlugin([{ from: './key.pem', to: 'key.pem' }]))
+        webpackConfig.plugins.push(new CopyWebpackPlugin([{ from: keyFile, to: 'key.pem' }]))
       } else {
         logger.warn('No `key.pem` file detected. This is problematic only if you are publishing an existing extension')
       }
@@ -49,10 +57,9 @@ module.exports = (api) => {
             jsonContent.content_security_policy = "script-src 'self' 'unsafe-eval'; object-src 'self'"
 
             try {
-              const keyfile = path.join(appRootPath, 'key.pem')
-              fs.statSync(keyfile)
+              fs.statSync(keyFile)
 
-              return exec(`openssl rsa -in ${keyfile} -pubout -outform DER | openssl base64 -A`, (error, stdout) => {
+              return exec(`openssl rsa -in ${keyFile} -pubout -outform DER | openssl base64 -A`, (error, stdout) => {
                 if (error) {
                   // node couldn't execute the command
                   reject(error)
@@ -62,11 +69,7 @@ module.exports = (api) => {
                 resolve(JSON.stringify(jsonContent, null, 2))
               })
             } catch (error) {
-              if (isProduction) {
-                logger.error('no key.pem file found. You cannot publish to the chrome store without one. If this is your first publish, chrome will make a key for you, and you can ignore this message')
-              } else {
-                logger.warn('No key.pem file found. This is fine for dev, however you may have problems publishing without one')
-              }
+              logger.warn('No key.pem file found. This is fine for dev, however you may have problems publishing without one')
               resolve(JSON.stringify(jsonContent, null, 2))
             }
           })
@@ -90,13 +93,12 @@ module.exports = (api) => {
     }
 
     if (isDevelopment) {
-      webpackConfig.plugins = (webpackConfig.plugins || []).concat([
-        new ChromeExtensionReloader({
-          entries: {
-            background: 'background'
-          }
-        })
-      ])
+      const entries = {}
+      if (hasBackgroundFile) {
+        entries.background = 'background'
+      }
+
+      webpackConfig.plugins.push(new ChromeExtensionReloader({ entries }))
     }
   })
 }
