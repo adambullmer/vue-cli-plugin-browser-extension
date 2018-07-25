@@ -15,12 +15,14 @@
     "persistent": false
   },
   "browser_action": {
+    <%_ if (options.popupPage) { -%>
+    "default_popup": "popup/popup.html",
+    <%_ } -%>
     "default_title": "<%- rootOptions.projectName %>",
     "default_icon": {
       "19": "icons/19.png",
       "38": "icons/38.png"
-    },
-    "default_popup": "popup/popup.html"
+    }
   }<% if (options.optionsPage) { %>,
   "options_ui": {
     "page": "options/options.html",

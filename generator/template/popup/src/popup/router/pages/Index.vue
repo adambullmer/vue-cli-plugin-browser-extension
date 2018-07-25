@@ -6,6 +6,9 @@
 export default {
   data () {
     return {}
+  },
+  mounted () {
+    chrome.runtime.sendMessage({});
   }
 }
 </script>

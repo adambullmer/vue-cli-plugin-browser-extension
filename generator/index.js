@@ -20,12 +20,7 @@ module.exports = (api, options) => {
     }
   }
   const renderConfig = {
-    pages: {
-      'popup/popup': {
-        entry: 'src/popup/popup.js',
-        title: 'Popup'
-      }
-    }
+    pages: {}
   }
 
   if (api.hasPlugin('eslint')) {
@@ -35,6 +30,15 @@ module.exports = (api, options) => {
 
   api.extendPackage(pkg)
   api.render('./template/base-app', { ...options })
+
+  if (options.popupPage) {
+    api.render('./template/popup', { ...options })
+
+    renderConfig.pages['popup/popup'] = {
+      entry: 'src/popup/popup.js',
+      title: 'Popup'
+    }
+  }
 
   if (options.optionsPage) {
     api.render('./template/options', { ...options })
