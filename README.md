@@ -77,10 +77,9 @@ yarn test
 - Add some generator options for other pieces of browser extensions. This includes scaffolding the components/dirs, and registering the build options into the build time hooks.
   - Dev Tools
   - Dedicated extension pages
-  - Content scripts
-- More configurability in scaffolding, like [Kocal/vue-web-extension](https://github.com/Kocal/vue-web-extension) does
 - A preset
 - Key Generation
+- Cleanup the dist-zip directory
 
 ## Credits
 - [https://github.com/Kocal/vue-web-extension](https://github.com/Kocal/vue-web-extension) For inspiration on app and build structure

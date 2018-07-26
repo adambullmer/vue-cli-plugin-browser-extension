@@ -9,16 +9,18 @@
     "128": "icons/128.png"
   },
   "permissions": [
+    <%_ if (options.components.contentScript) { -%>
+    "activeTab",
+    <%_ } -%>
     "<all_urls>",
-    "*://*/*"<% if (options.contentScript) { %>,
-    "activeTab"<% } %>
+    "*://*/*"
   ],
   "background": {
     "scripts": ["background.js"],
     "persistent": false
   },
   "browser_action": {
-    <%_ if (options.popupPage) { -%>
+    <%_ if (options.components.popup) { -%>
     "default_popup": "popup/popup.html",
     <%_ } -%>
     "default_title": "<%- name %>",
@@ -26,9 +28,11 @@
       "19": "icons/19.png",
       "38": "icons/38.png"
     }
-  }<% if (options.optionsPage) { %>,
+  <%_ if (options.components.options) { -%>
+  },
   "options_ui": {
     "page": "options/options.html",
     "chrome_style": true
-  }<% } %>
+  <%_ } -%>
+  }
 }

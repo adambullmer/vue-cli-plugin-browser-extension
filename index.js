@@ -6,32 +6,27 @@ const CopyWebpackPlugin = require('copy-webpack-plugin')
 const ChromeExtensionReloader = require('webpack-chrome-extension-reloader')
 const WebpackShellPlugin = require('webpack-shell-plugin-next')
 const ZipPlugin = require('zip-webpack-plugin')
+const defaultOptions = { components: {} }
 
-module.exports = (api) => {
+module.exports = (api, options) => {
   const appRootPath = api.getCwd()
+  const pluginOptions = options.pluginOptions.browserExtension ? options.pluginOptions.browserExtension : defaultOptions
   const { name, version } = require(path.join(appRootPath, 'package.json'))
   const isDevelopment = api.service.mode === 'development'
   const isProduction = api.service.mode === 'production'
-  const outputDir = api.resolve(api.service.projectOptions.outputDir || 'dist')
+  const outputDir = api.resolve(options.outputDir || 'dist')
   const packageScript = isProduction ? null : 'remove-evals.js'
   const keyFile = api.resolve('key.pem')
   const hasKeyFile = fs.existsSync(keyFile)
   const backgroundFile = api.resolve('src/background.js')
   const contentScriptFile = api.resolve('src/content-script.js')
-  const hasBackgroundFile = fs.existsSync(backgroundFile)
-  const hasContentScriptFile = fs.existsSync(contentScriptFile)
 
   api.chainWebpack((webpackConfig) => {
-    webpackConfig.entryPoints.delete('app').end()
-      .when(hasBackgroundFile, (config) => {
-        config.entry('background')
-          .add(backgroundFile)
-          .end()
-      })
-      .when(hasContentScriptFile, (config) => {
-        config.entry('content-script')
-          .add(contentScriptFile)
-          .end()
+    webpackConfig.entryPoints
+      .delete('app').end()
+      .entry('background').add(backgroundFile).end()
+      .when(pluginOptions.components.contentScript, (config) => {
+        config.entry('content-script').add(contentScriptFile).end()
       })
   })
 
@@ -86,7 +81,7 @@ module.exports = (api) => {
 
     if (packageScript === null) {
       webpackConfig.plugins.push(new ZipPlugin({
-        path: api.resolve(`${api.service.projectOptions.outputDir || 'dist'}-zip`),
+        path: api.resolve(`${options.outputDir || 'dist'}-zip`),
         filename: `${name}-v${version}.zip`
       }))
     } else {
@@ -100,11 +95,9 @@ module.exports = (api) => {
     }
 
     if (isDevelopment) {
-      const entries = {}
-      if (hasBackgroundFile) {
-        entries.background = 'background'
-      }
-      if (hasContentScriptFile) {
+      const entries = { background: 'background' }
+
+      if (pluginOptions.components.contentScript) {
         entries.contentScript = 'content-script'
       }
 
