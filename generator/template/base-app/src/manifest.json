@@ -1,14 +1,13 @@
 {
   "manifest_version": 2,
+  "name": "<%- name %>",
+  "homepage_url": "http://localhost/",
+  "description": "A Vue Browser Extension",
   "icons": {
     "16": "icons/16.png",
     "48": "icons/48.png",
     "128": "icons/128.png"
   },
-  "name": "<%- rootOptions.projectName %>",
-  "homepage_url": "http://localhost/",
-  "description": "A Vue Browser Extension",
-  "version": "1.0",
   "permissions": [
     "<all_urls>",
     "*://*/*"<% if (options.contentScript) { %>,
@@ -22,7 +21,7 @@
     <%_ if (options.popupPage) { -%>
     "default_popup": "popup/popup.html",
     <%_ } -%>
-    "default_title": "<%- rootOptions.projectName %>",
+    "default_title": "<%- name %>",
     "default_icon": {
       "19": "icons/19.png",
       "38": "icons/38.png"

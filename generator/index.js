@@ -1,4 +1,5 @@
 const fs = require('fs')
+const path = require('path')
 const gitignoreSnippet = `
 # Vue Browser Extension Output
 *.pem
@@ -8,6 +9,8 @@ const gitignoreSnippet = `
 `
 
 module.exports = (api, options) => {
+  const appRootPath = process.cwd()
+  const { name } = require(path.join(appRootPath, 'package.json'))
   const eslintConfig = { env: { webextensions: true } }
   const pkg = {
     private: true,
@@ -29,10 +32,10 @@ module.exports = (api, options) => {
   }
 
   api.extendPackage(pkg)
-  api.render('./template/base-app', { ...options })
+  api.render('./template/base-app', { name, ...options })
 
   if (options.popupPage) {
-    api.render('./template/popup', { ...options })
+    api.render('./template/popup', { name, ...options })
 
     renderConfig.pages['popup/popup'] = {
       entry: 'src/popup/popup.js',
@@ -41,7 +44,7 @@ module.exports = (api, options) => {
   }
 
   if (options.optionsPage) {
-    api.render('./template/options', { ...options })
+    api.render('./template/options', { name, ...options })
 
     renderConfig.pages['options/options'] = {
       entry: 'src/options/options.js',
