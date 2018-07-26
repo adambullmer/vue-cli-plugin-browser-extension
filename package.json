@@ -28,7 +28,6 @@
     "copy-webpack-plugin": "^4.5.2",
     "webpack": "^4.16.0",
     "webpack-chrome-extension-reloader": "^0.8.3",
-    "webpack-shell-plugin-next": "https://github.com/adambullmer/webpack-shell-plugin-next.git",
     "zip-webpack-plugin": "^3.0.0"
   }
 }

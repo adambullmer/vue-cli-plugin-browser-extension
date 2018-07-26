@@ -4,7 +4,6 @@ const { exec } = require('child_process')
 const logger = require('@vue/cli-shared-utils')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const ChromeExtensionReloader = require('webpack-chrome-extension-reloader')
-const WebpackShellPlugin = require('webpack-shell-plugin-next')
 const ZipPlugin = require('zip-webpack-plugin')
 const defaultOptions = { components: {} }
 
@@ -14,8 +13,6 @@ module.exports = (api, options) => {
   const { name, version } = require(path.join(appRootPath, 'package.json'))
   const isDevelopment = api.service.mode === 'development'
   const isProduction = api.service.mode === 'production'
-  const outputDir = api.resolve(options.outputDir || 'dist')
-  const packageScript = isProduction ? null : 'remove-evals.js'
   const keyFile = api.resolve('key.pem')
   const hasKeyFile = fs.existsSync(keyFile)
   const backgroundFile = api.resolve('src/background.js')
@@ -33,6 +30,7 @@ module.exports = (api, options) => {
   api.configureWebpack((webpackConfig) => {
     webpackConfig.output.filename = '[name].js'
     webpackConfig.output.chunkFilename = 'js/[id].[name].js?[hash:8]'
+    webpackConfig.node.global = false
 
     if (isProduction) {
       if (hasKeyFile) {
@@ -79,18 +77,10 @@ module.exports = (api, options) => {
       }
     ]))
 
-    if (packageScript === null) {
+    if (isProduction) {
       webpackConfig.plugins.push(new ZipPlugin({
         path: api.resolve(`${options.outputDir || 'dist'}-zip`),
         filename: `${name}-v${version}.zip`
-      }))
-    } else {
-      webpackConfig.plugins.push(new WebpackShellPlugin({
-        onBuildExit: {
-          scripts: [`node ${path.join(__dirname, 'scripts', packageScript)} ${outputDir}`],
-          blocking: true,
-          parallel: false
-        }
       }))
     }
 
