@@ -10,7 +10,7 @@ const defaultOptions = { components: {} }
 
 module.exports = (api, options) => {
   const appRootPath = api.getCwd()
-  const pluginOptions = options.pluginOptions.browserExtension ? options.pluginOptions.browserExtension : defaultOptions
+  const pluginOptions = options.pluginOptions.browserExtension ? options.pluginOptions.browserExtension.options : defaultOptions
   const { name, version } = require(path.join(appRootPath, 'package.json'))
   const isDevelopment = api.service.mode === 'development'
   const isProduction = api.service.mode === 'production'
