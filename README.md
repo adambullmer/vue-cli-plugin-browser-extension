@@ -4,7 +4,7 @@ Browser extension development plugin for vue-cli 3.x
 ## What does it do?
 This is intended to be a vue-cli@3.x replacement for [https://github.com/Kocal/vue-web-extension](https://github.com/Kocal/vue-web-extension).
 
-This plugin adds a new command `ext-serve` to your vue applications.
+This plugin changes the `serve` command for your vue applications.
 This new command is only for running a livereload server while testing out your browser extension.
 
 This removes the entrypoint of `main.js`, and as such will not scaffold a general vue app.
@@ -41,6 +41,7 @@ I hope to be able to scaffold an app so that identifying the below in unnecessar
       |- mutation-types.js
       |- mutations.js
    |- background.js
+   |- content-script.js
    |- manifest.json
 ```
 
