@@ -34,6 +34,15 @@ I hope to be able to scaffold an app so that identifying the below in unnecessar
       |- App.vue
       |- popup.html
       |- popup.js
+   |- standalone/
+      |- router/
+         |- pages/
+            |- Index.vue
+         |- index.js
+         |- routes.js
+      |- App.vue
+      |- standalone.html
+      |- standalone.js
    |- store/
       |- actions.js
       |- getters.js
@@ -77,7 +86,6 @@ yarn test
 ## Roadmap
 - Add some generator options for other pieces of browser extensions. This includes scaffolding the components/dirs, and registering the build options into the build time hooks.
   - Dev Tools
-  - Dedicated extension pages
 - A preset
 - Key Generation
 - Cleanup the dist-zip directory

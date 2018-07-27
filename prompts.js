@@ -20,11 +20,11 @@ module.exports = [
         name: 'Content Script',
         value: 'contentScript',
         short: 'content script'
-      // },
-      // {
-      //   name: 'Standalone Tab',
-      //   value: 'standalone',
-      //   short: 'standalone'
+      },
+      {
+        name: 'Standalone Tab',
+        value: 'standalone',
+        short: 'standalone'
       // },
       // {
       //   name: 'Dev Tools Tab',

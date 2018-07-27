@@ -55,6 +55,17 @@ module.exports = (api, options) => {
     }
   }
 
+  if (options.components.standalone) {
+    console.log('Generating standalone app')
+    api.render('./template/standalone', { name, ...options })
+
+    pkg.vue.pages['standalone/standalone'] = {
+      entry: 'src/standalone/standalone.js',
+      filename: 'app.html',
+      title: name
+    }
+  }
+
   if (options.components.contentScript) {
     api.render('./template/content-script', { ...options })
   }
