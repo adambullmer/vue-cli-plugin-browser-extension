@@ -37,7 +37,7 @@ module.exports = (api, options) => {
   api.extendPackage(pkg)
   api.render('./template/base-app', { name, ...options })
 
-  if (options.popupPage) {
+  if (options.components.popup) {
     api.render('./template/popup', { name, ...options })
 
     pkg.vue.pages['popup/popup'] = {
@@ -46,7 +46,7 @@ module.exports = (api, options) => {
     }
   }
 
-  if (options.optionsPage) {
+  if (options.components.options) {
     api.render('./template/options', { name, ...options })
 
     pkg.vue.pages['options/options'] = {
@@ -55,7 +55,7 @@ module.exports = (api, options) => {
     }
   }
 
-  if (options.contentScript) {
+  if (options.components.contentScript) {
     api.render('./template/content-script', { ...options })
   }
 
