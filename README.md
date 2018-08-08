@@ -19,6 +19,8 @@ I hope to be able to scaffold an app so that identifying the below in unnecessar
 |- src/
    |- assets/
       |- Static assets in use in your app, like logo.png
+   |- content_scripts
+      |- content-script.js
    |- icons/
       |- Icons for your extension. Should include a 16, 19, 38, 48, 128 px square image
    |- options/ (asked during project generation)
@@ -50,7 +52,6 @@ I hope to be able to scaffold an app so that identifying the below in unnecessar
       |- mutation-types.js
       |- mutations.js
    |- background.js
-   |- content-script.js
    |- manifest.json
 ```
 
