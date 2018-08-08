@@ -3,6 +3,10 @@
 </template>
 
 <script>
+<%_ if (options.usePolyfill && !options.autoImportPolyfill) { -%>
+import browser from 'webextension-polyfill'
+<%_ } -%>
+
 export default {
   data () {
     return {}

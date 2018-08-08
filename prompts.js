@@ -57,5 +57,19 @@ module.exports = [
         value: 'chrome'
       }
     ]
+  },
+  {
+    name: 'usePolyfill',
+    type: 'confirm',
+    message: 'Add WebExtension polyfill?',
+    default: true,
+    when: answers => answers.api === 'browser'
+  },
+  {
+    name: 'autoImportPolyfill',
+    type: 'confirm',
+    message: 'Make polyfill available without import?',
+    default: true,
+    when: answers => answers.usePolyfill
   }
 ]
