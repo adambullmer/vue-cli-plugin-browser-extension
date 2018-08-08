@@ -2,9 +2,15 @@ module.exports = [
   {
     name: 'components',
     type: 'checkbox',
-    default: ['popup'],
+    defaults: ['popup', 'background'],
     message: 'Which browser extension components do you wish to generate?',
     choices: [
+      {
+        name: 'Background script',
+        value: 'background',
+        short: 'background',
+        checked: true
+      },
       {
         name: 'Browser Action Popup',
         value: 'popup',
@@ -17,9 +23,9 @@ module.exports = [
         short: 'options'
       },
       {
-        name: 'Content Script',
-        value: 'contentScript',
-        short: 'content script'
+        name: 'Content Scripts',
+        value: 'contentScripts',
+        short: 'content scripts'
       },
       {
         name: 'Standalone Tab',

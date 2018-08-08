@@ -9,16 +9,18 @@
     "128": "icons/128.png"
   },
   "permissions": [
-    <%_ if (options.components.contentScript) { -%>
+    <%_ if (options.components.contentScripts) { -%>
     "activeTab",
     <%_ } -%>
     "<all_urls>",
     "*://*/*"
   ],
+  <%_ if (options.components.background) { -%>
   "background": {
     "scripts": ["background.js"],
     "persistent": false
   },
+  <%_ } -%>
   "browser_action": {
     <%_ if (options.components.popup) { -%>
     "default_popup": "popup/popup.html",

@@ -8,7 +8,22 @@ const gitignoreSnippet = `
 /dist-zip
 `
 
-module.exports = (api, options) => {
+module.exports = (api, _options) => {
+  const options = Object.assign({}, _options)
+  options.componentOptions = {}
+  if (options.components.background) {
+    options.componentOptions.background = {
+      entry: 'src/background.js'
+    }
+  }
+  if (options.components.contentScripts) {
+    options.componentOptions.contentScripts = {
+      entries: {
+        'content_scripts/content-script': ['src/content_scripts/content-script.js']
+      }
+    }
+  }
+
   const appRootPath = process.cwd()
   const { name } = require(path.join(appRootPath, 'package.json'))
   const eslintConfig = { env: { webextensions: true } }
@@ -24,7 +39,7 @@ module.exports = (api, options) => {
     vue: {
       pages: {},
       pluginOptions: {
-        browserExtension: { options }
+        browserExtension: options
       }
     }
   }
@@ -43,6 +58,10 @@ module.exports = (api, options) => {
 
   api.extendPackage(pkg)
   api.render('./template/base-app', { name, ...options })
+
+  if (options.components.background) {
+    api.render('./template/background', { name, ...options })
+  }
 
   if (options.components.popup) {
     api.render('./template/popup', { name, ...options })
@@ -73,7 +92,7 @@ module.exports = (api, options) => {
     }
   }
 
-  if (options.components.contentScript) {
+  if (options.components.contentScripts) {
     api.render('./template/content-script', { ...options })
   }
 

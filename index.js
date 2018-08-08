@@ -5,26 +5,35 @@ const logger = require('@vue/cli-shared-utils')
 const webpack = require('webpack')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const ZipPlugin = require('zip-webpack-plugin')
-const defaultOptions = { components: {} }
+const defaultOptions = { components: {}, componentOptions: {} }
 
 module.exports = (api, options) => {
   const appRootPath = api.getCwd()
-  const pluginOptions = options.pluginOptions.browserExtension ? options.pluginOptions.browserExtension.options : defaultOptions
+  const pluginOptions = options.pluginOptions.browserExtension ? options.pluginOptions.browserExtension : defaultOptions
+  const componentOptions = pluginOptions.componentOptions
   const { name, version } = require(path.join(appRootPath, 'package.json'))
   const isDevelopment = api.service.mode === 'development'
   const isProduction = api.service.mode === 'production'
   const keyFile = api.resolve('key.pem')
   const hasKeyFile = fs.existsSync(keyFile)
-  const backgroundFile = api.resolve('src/background.js')
-  const contentScriptFile = api.resolve('src/content-script.js')
 
   api.chainWebpack((webpackConfig) => {
-    webpackConfig.entryPoints
-      .delete('app').end()
-      .entry('background').add(backgroundFile).end()
-      .when(pluginOptions.components.contentScript, (config) => {
-        config.entry('content-script').add(contentScriptFile).end()
-      })
+    const config = webpackConfig.entryPoints.delete('app').end()
+    const entry = {}
+    if (pluginOptions.components.background) {
+      entry['background'] = [api.resolve(componentOptions.background.entry)]
+    }
+    if (pluginOptions.components.contentScripts) {
+      const entries = componentOptions.contentScripts.entries
+      for (const name of Object.keys(entries)) {
+        let paths = entries[name]
+        if (!Array.isArray(paths)) {
+          paths = [paths]
+        }
+        entry[name] = paths.map(path => api.resolve(path))
+      }
+    }
+    config.merge({entry})
   })
 
   api.configureWebpack((webpackConfig) => {
@@ -97,12 +106,15 @@ module.exports = (api, options) => {
     }
 
     if (options.api === 'chrome' && isDevelopment) {
-      const entries = { background: 'background' }
+      const entries = {}
 
-      if (pluginOptions.components.contentScript) {
-        entries.contentScript = 'content-script'
+      if (pluginOptions.components.background) {
+        entries.background = 'background'
       }
 
+      if (pluginOptions.components.contentScripts) {
+        entries.contentScript = Object.keys(componentOptions.contentScripts.entries)
+      }
       const ChromeExtensionReloader = require('webpack-chrome-extension-reloader')
       webpackConfig.plugins.push(new ChromeExtensionReloader({ entries }))
     }
