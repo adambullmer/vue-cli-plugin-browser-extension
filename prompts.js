@@ -41,5 +41,21 @@ module.exports = [
 
       return componentMap
     }
+  },
+  {
+    name: 'api',
+    type: 'list',
+    default: 'browser',
+    message: 'Which extension API do you wish to use?',
+    choices: [
+      {
+        name: 'browser (WebExtension)',
+        value: 'browser'
+      },
+      {
+        name: 'chrome',
+        value: 'chrome'
+      }
+    ]
   }
 ]

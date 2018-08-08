@@ -8,7 +8,7 @@ export default {
     return {}
   },
   mounted () {
-    chrome.runtime.sendMessage({});
+    <%- options.api %>.runtime.sendMessage({});
   }
 }
 </script>
