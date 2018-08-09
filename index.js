@@ -5,13 +5,17 @@ const logger = require('@vue/cli-shared-utils')
 const webpack = require('webpack')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const ZipPlugin = require('zip-webpack-plugin')
-const defaultOptions = { components: {}, componentOptions: {} }
+const defaultOptions = {
+  components: {},
+  componentOptions: {},
+  manifestSync: ['version']
+}
 
 module.exports = (api, options) => {
   const appRootPath = api.getCwd()
   const pluginOptions = options.pluginOptions.browserExtension ? options.pluginOptions.browserExtension : defaultOptions
   const componentOptions = pluginOptions.componentOptions
-  const { name, version } = require(path.join(appRootPath, 'package.json'))
+  const packageJson = require(path.join(appRootPath, 'package.json'))
   const isDevelopment = api.service.mode === 'development'
   const isProduction = api.service.mode === 'production'
   const keyFile = api.resolve('key.pem')
@@ -73,7 +77,12 @@ module.exports = (api, options) => {
       transform: (content) => {
         return new Promise((resolve, reject) => {
           const jsonContent = JSON.parse(content)
-          jsonContent.version = version
+          if (options.manifestSync.includes('version')) {
+            jsonContent.version = packageJson.version
+          }
+          if (options.manifestSync.includes('description')) {
+            jsonContent.description = packageJson.description
+          }
 
           if (isProduction) {
             return resolve(JSON.stringify(jsonContent, null, 2))
@@ -106,7 +115,7 @@ module.exports = (api, options) => {
     if (isProduction) {
       webpackConfig.plugins.push(new ZipPlugin({
         path: api.resolve(`${options.outputDir || 'dist'}-zip`),
-        filename: `${name}-v${version}.zip`
+        filename: `${packageJson.name}-v${packageJson.version}.zip`
       }))
     }
 
