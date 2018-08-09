@@ -4,7 +4,6 @@ const { exec } = require('child_process')
 const logger = require('@vue/cli-shared-utils')
 const webpack = require('webpack')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
-const ChromeExtensionReloader = require('webpack-chrome-extension-reloader')
 const ZipPlugin = require('zip-webpack-plugin')
 const defaultOptions = { components: {} }
 
@@ -97,13 +96,14 @@ module.exports = (api, options) => {
       }))
     }
 
-    if (isDevelopment) {
+    if (options.api === 'chrome' && isDevelopment) {
       const entries = { background: 'background' }
 
       if (pluginOptions.components.contentScript) {
         entries.contentScript = 'content-script'
       }
 
+      const ChromeExtensionReloader = require('webpack-chrome-extension-reloader')
       webpackConfig.plugins.push(new ChromeExtensionReloader({ entries }))
     }
   })
