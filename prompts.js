@@ -2,7 +2,7 @@ module.exports = [
   {
     name: 'components',
     type: 'checkbox',
-    defaults: ['popup', 'background', 'icons'],
+    default: ['popup', 'background', 'icons'],
     message: 'Which browser extension components do you wish to generate?',
     choices: [
       {
