@@ -2,7 +2,7 @@ module.exports = [
   {
     name: 'components',
     type: 'checkbox',
-    defaults: ['popup', 'background'],
+    defaults: ['popup', 'background', 'icons'],
     message: 'Which browser extension components do you wish to generate?',
     choices: [
       {
@@ -36,6 +36,12 @@ module.exports = [
       //   name: 'Dev Tools Tab',
       //   value: 'devTools',
       //   short: 'dev tools'
+      },
+      {
+        name: 'Icons',
+        value: 'icons',
+        short: 'icons',
+        checked: true
       }
     ],
     filter: async (input) => {

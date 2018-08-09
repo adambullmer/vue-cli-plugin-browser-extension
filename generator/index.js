@@ -96,6 +96,10 @@ module.exports = (api, _options) => {
     api.render('./template/content-script', { ...options })
   }
 
+  if (options.components.icons) {
+    api.render('./template/icons', { name, ...options })
+  }
+
   api.onCreateComplete(() => {
     const gitignore = fs.readFileSync(api.resolve('./.gitignore'), 'utf8')
     fs.writeFileSync(api.resolve('./.gitignore'), gitignore + gitignoreSnippet)

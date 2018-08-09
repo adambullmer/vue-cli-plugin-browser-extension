@@ -61,42 +61,47 @@ module.exports = (api, options) => {
       }
     }
 
-    webpackConfig.plugins.push(new CopyWebpackPlugin([
-      { from: './src/icons', to: 'icons/[name].[ext]', ignore: ['icon.xcf'] },
-      {
-        from: './src/manifest.json',
-        to: 'manifest.json',
-        transform: (content) => {
-          return new Promise((resolve, reject) => {
-            const jsonContent = JSON.parse(content)
-            jsonContent.version = version
+    const toCopy = []
 
-            if (isProduction) {
-              return resolve(JSON.stringify(jsonContent, null, 2))
-            }
+    if (options.components.icons) {
+      toCopy.push({ from: './src/icons', to: 'icons/[name].[ext]', ignore: ['icon.xcf'] })
+    }
 
-            jsonContent.content_security_policy = "script-src 'self' 'unsafe-eval'; object-src 'self'"
+    toCopy.push({
+      from: './src/manifest.json',
+      to: 'manifest.json',
+      transform: (content) => {
+        return new Promise((resolve, reject) => {
+          const jsonContent = JSON.parse(content)
+          jsonContent.version = version
 
-            try {
-              fs.statSync(keyFile)
+          if (isProduction) {
+            return resolve(JSON.stringify(jsonContent, null, 2))
+          }
 
-              return exec(`openssl rsa -in ${keyFile} -pubout -outform DER | openssl base64 -A`, (error, stdout) => {
-                if (error) {
-                  // node couldn't execute the command
-                  reject(error)
-                }
+          jsonContent.content_security_policy = "script-src 'self' 'unsafe-eval'; object-src 'self'"
 
-                jsonContent.key = stdout
-                resolve(JSON.stringify(jsonContent, null, 2))
-              })
-            } catch (error) {
-              logger.warn('No key.pem file found. This is fine for dev, however you may have problems publishing without one')
+          try {
+            fs.statSync(keyFile)
+
+            return exec(`openssl rsa -in ${keyFile} -pubout -outform DER | openssl base64 -A`, (error, stdout) => {
+              if (error) {
+                // node couldn't execute the command
+                reject(error)
+              }
+
+              jsonContent.key = stdout
               resolve(JSON.stringify(jsonContent, null, 2))
-            }
-          })
-        }
+            })
+          } catch (error) {
+            logger.warn('No key.pem file found. This is fine for dev, however you may have problems publishing without one')
+            resolve(JSON.stringify(jsonContent, null, 2))
+          }
+        })
       }
-    ]))
+    })
+
+    webpackConfig.plugins.push(new CopyWebpackPlugin(toCopy))
 
     if (isProduction) {
       webpackConfig.plugins.push(new ZipPlugin({
