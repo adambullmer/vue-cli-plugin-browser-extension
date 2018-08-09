@@ -67,7 +67,7 @@ module.exports = (api, options) => {
 
     const toCopy = []
 
-    if (options.components.icons) {
+    if (pluginOptions.components.icons) {
       toCopy.push({ from: './src/icons', to: 'icons/[name].[ext]', ignore: ['icon.xcf'] })
     }
 
@@ -77,10 +77,10 @@ module.exports = (api, options) => {
       transform: (content) => {
         return new Promise((resolve, reject) => {
           const jsonContent = JSON.parse(content)
-          if (options.manifestSync.includes('version')) {
+          if (pluginOptions.manifestSync.includes('version')) {
             jsonContent.version = packageJson.version
           }
-          if (options.manifestSync.includes('description')) {
+          if (pluginOptions.manifestSync.includes('description')) {
             jsonContent.description = packageJson.description
           }
 
