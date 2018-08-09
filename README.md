@@ -75,6 +75,40 @@ yarn serve
 yarn build
 ```
 
+## Plugin options
+
+Plugin options can be set inside your `vue.config.js`:
+
+```js
+// vue.config.js
+module.exports = {
+  pluginOptions: {
+    browserExtension: {
+      options: {
+        // options...
+      }
+    }
+  }
+}
+```
+
+- **components**
+  - Type: `Object.<string, boolean>`
+
+  The browser extension components that will be managed by this plugin.
+
+  Valid components are:
+  - popup
+  - options
+  - contentScript
+  - standalone
+
+  ```js
+  components: {
+    popup: true,
+    contentScript: true
+  }
+  ```
 
 ## Testing
 This library is following the standard styling of vue projects, and those are really the only tests to perform.
