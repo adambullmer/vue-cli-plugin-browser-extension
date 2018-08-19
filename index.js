@@ -13,7 +13,7 @@ const defaultOptions = {
 
 module.exports = (api, options) => {
   const appRootPath = api.getCwd()
-  const pluginOptions = options.pluginOptions.browserExtension ? options.pluginOptions.browserExtension : defaultOptions
+  const pluginOptions = options.pluginOptions.browserExtension ? Object.assign(defaultOptions, options.pluginOptions.browserExtension) : defaultOptions
   const componentOptions = pluginOptions.componentOptions
   const packageJson = require(path.join(appRootPath, 'package.json'))
   const isDevelopment = api.service.mode === 'development'
