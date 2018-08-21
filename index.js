@@ -29,7 +29,7 @@ module.exports = (api, options) => {
 
   api.configureWebpack((webpackConfig) => {
     webpackConfig.output.filename = '[name].js'
-    webpackConfig.output.chunkFilename = 'js/[id].[name].js?[hash:8]'
+    webpackConfig.output.chunkFilename = 'js/[id].[name].js'
     webpackConfig.node.global = false
 
     if (isProduction) {
