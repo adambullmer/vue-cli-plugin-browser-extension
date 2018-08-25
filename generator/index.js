@@ -29,6 +29,13 @@ module.exports = (api, options) => {
     }
   }
 
+  if (options.usePolyfill) {
+    pkg.dependencies['webextension-polyfill'] = '^0.3.0'
+    pkg.devDependencies = {
+      'imports-loader': '^0.8.0'
+    }
+  }
+
   if (api.hasPlugin('eslint')) {
     console.log('Adding eslint config stuffs')
     pkg.eslintConfig = eslintConfig

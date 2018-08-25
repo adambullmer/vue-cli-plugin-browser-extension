@@ -2,8 +2,8 @@ const path = require('path')
 const fs = require('fs')
 const { exec } = require('child_process')
 const logger = require('@vue/cli-shared-utils')
+const webpack = require('webpack')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
-const ChromeExtensionReloader = require('webpack-chrome-extension-reloader')
 const ZipPlugin = require('zip-webpack-plugin')
 const defaultOptions = { components: {} }
 
@@ -31,6 +31,18 @@ module.exports = (api, options) => {
     webpackConfig.output.filename = '[name].js'
     webpackConfig.output.chunkFilename = 'js/[id].[name].js?[hash:8]'
     webpackConfig.node.global = false
+
+    if (pluginOptions.autoImportPolyfill) {
+      webpackConfig.plugins.push(new webpack.ProvidePlugin({
+        'browser': 'webextension-polyfill'
+      }))
+
+      // Workaround for https://github.com/mozilla/webextension-polyfill/issues/68
+      webpackConfig.module.rules.push({
+        test: require.resolve('webextension-polyfill', {paths: [appRootPath]}),
+        use: 'imports-loader?browser=>undefined'
+      })
+    }
 
     if (isProduction) {
       if (hasKeyFile) {
@@ -84,13 +96,14 @@ module.exports = (api, options) => {
       }))
     }
 
-    if (isDevelopment) {
+    if (options.api === 'chrome' && isDevelopment) {
       const entries = { background: 'background' }
 
       if (pluginOptions.components.contentScript) {
         entries.contentScript = 'content-script'
       }
 
+      const ChromeExtensionReloader = require('webpack-chrome-extension-reloader')
       webpackConfig.plugins.push(new ChromeExtensionReloader({ entries }))
     }
   })

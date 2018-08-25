@@ -32,7 +32,7 @@
   },
   "options_ui": {
     "page": "options/options.html",
-    "chrome_style": true
+    "<%- options.api %>_style": true
   <%_ } -%>
   }
 }

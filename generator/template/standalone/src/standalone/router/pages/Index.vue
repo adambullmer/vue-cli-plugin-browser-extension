@@ -3,12 +3,16 @@
 </template>
 
 <script>
+<%_ if (options.usePolyfill && !options.autoImportPolyfill) { -%>
+import browser from 'webextension-polyfill'
+<%_ } -%>
+
 export default {
   data () {
     return {}
   },
   mounted () {
-    chrome.runtime.sendMessage({});
+    <%- options.api %>.runtime.sendMessage({});
   }
 }
 </script>

@@ -1,12 +1,15 @@
 import store from './store'
+<%_ if (options.usePolyfill && !options.autoImportPolyfill) { -%>
+import browser from 'webextension-polyfill'
+<%_ } -%>
 
 <%_ if (options.popupPage) { -%>
-chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {<%_ } else { -%>
-chrome.browserAction.onClicked.addListener(function (tab) {<%_ } -%>
+<%- options.api %>.runtime.onMessage.addListener(function (request, sender, sendResponse) {<%_ } else { -%>
+<%- options.api %>.browserAction.onClicked.addListener(function (tab) {<%_ } -%>
   console.log(`Hello ${store.getters.foo}!`)
 
   <%_ if (options.contentScript) { -%>
-  chrome.tabs.executeScript({
+  <%- options.api %>.tabs.executeScript({
     file: 'content-script.js',
   });
   <%_ } -%>

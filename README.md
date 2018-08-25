@@ -75,6 +75,59 @@ yarn serve
 yarn build
 ```
 
+## Plugin options
+
+Plugin options can be set inside your `vue.config.js`:
+
+```js
+// vue.config.js
+module.exports = {
+  pluginOptions: {
+    browserExtension: {
+      options: {
+        // options...
+      }
+    }
+  }
+}
+```
+
+- **components**
+  - Type: `Object.<string, boolean>`
+
+  The browser extension components that will be managed by this plugin.
+
+  Valid components are:
+  - popup
+  - options
+  - contentScript
+  - standalone
+
+  ```js
+  components: {
+    popup: true,
+    contentScript: true
+  }
+  ```
+
+- **api** 
+  - Type: `'chrome'|'browser'`
+  - Default: `'browser'`
+  
+  Browser extension API to use.
+
+- **usePolyfill**
+  - Type: `boolean`
+  - Default: `true`
+  
+  Whether to add [webextension-polyfill](https://github.com/mozilla/webextension-polyfill) to polyfill WebExtension APIs in chrome.
+
+- **autoImportPolyfill**
+  - Type: `boolean`
+  - Default: `true`
+
+  Whether to auto import `webextension-polyfill` using Webpack's [ProvidePlugin](https://webpack.js.org/plugins/provide-plugin/).
+
 
 ## Testing
 This library is following the standard styling of vue projects, and those are really the only tests to perform.
