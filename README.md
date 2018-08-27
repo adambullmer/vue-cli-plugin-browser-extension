@@ -16,13 +16,14 @@ It makes some assumptions about your project setup.
 I hope to be able to scaffold an app so that identifying the below in unnecessary.
 
 ```
+|- public/
+  |- icons/
+    |- Icons for your extension. Should include a 16, 19, 38, 48, 128 px square image
 |- src/
    |- assets/
       |- Static assets in use in your app, like logo.png
    |- content_scripts
       |- content-script.js
-   |- icons/
-      |- Icons for your extension. Should include a 16, 19, 38, 48, 128 px square image
    |- options/ (asked during project generation)
       |- App.vue
       |- options.html
@@ -102,13 +103,11 @@ module.exports = {
   - options
   - contentScripts
   - standalone
-  - icons
 
   ```js
   components: {
     background: true,
-    contentScripts: true,
-    icons: true
+    contentScripts: true
   }
   ```
 

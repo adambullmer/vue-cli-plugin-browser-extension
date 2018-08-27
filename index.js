@@ -65,13 +65,7 @@ module.exports = (api, options) => {
       }
     }
 
-    const toCopy = []
-
-    if (pluginOptions.components.icons) {
-      toCopy.push({ from: './src/icons', to: 'icons/[name].[ext]', ignore: ['icon.xcf'] })
-    }
-
-    toCopy.push({
+    webpackConfig.plugins.push(new CopyWebpackPlugin({
       from: './src/manifest.json',
       to: 'manifest.json',
       transform: (content) => {
@@ -108,9 +102,7 @@ module.exports = (api, options) => {
           }
         })
       }
-    })
-
-    webpackConfig.plugins.push(new CopyWebpackPlugin(toCopy))
+    }))
 
     if (isProduction) {
       webpackConfig.plugins.push(new ZipPlugin({
