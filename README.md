@@ -125,6 +125,24 @@ module.exports = {
 
   Currently, the only supported keys are `version` and `description`.
 
+- **api** 
+  - Type: `'chrome'|'browser'`
+  - Default: `'browser'`
+  
+  Browser extension API to use.
+
+- **usePolyfill**
+  - Type: `boolean`
+  - Default: `true`
+  
+  Whether to add [webextension-polyfill](https://github.com/mozilla/webextension-polyfill) to polyfill WebExtension APIs in chrome.
+
+- **autoImportPolyfill**
+  - Type: `boolean`
+  - Default: `true`
+
+  Whether to auto import `webextension-polyfill` using Webpack's [ProvidePlugin](https://webpack.js.org/plugins/provide-plugin/).
+
 ### Component options
 
 Some browser extension components have additional options which can be set as follows:
@@ -177,25 +195,6 @@ module.exports = {
     }
   }
   ```
-
-- **api** 
-  - Type: `'chrome'|'browser'`
-  - Default: `'browser'`
-  
-  Browser extension API to use.
-
-- **usePolyfill**
-  - Type: `boolean`
-  - Default: `true`
-  
-  Whether to add [webextension-polyfill](https://github.com/mozilla/webextension-polyfill) to polyfill WebExtension APIs in chrome.
-
-- **autoImportPolyfill**
-  - Type: `boolean`
-  - Default: `true`
-
-  Whether to auto import `webextension-polyfill` using Webpack's [ProvidePlugin](https://webpack.js.org/plugins/provide-plugin/).
-
 
 ## Testing
 This library is following the standard styling of vue projects, and those are really the only tests to perform.
