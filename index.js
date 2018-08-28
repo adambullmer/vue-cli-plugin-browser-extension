@@ -66,7 +66,7 @@ module.exports = (api, options) => {
       }
     }
 
-    webpackConfig.plugins.push(new CopyWebpackPlugin({
+    webpackConfig.plugins.push(new CopyWebpackPlugin([{
       from: './src/manifest.json',
       to: 'manifest.json',
       transform: (content) => {
@@ -103,7 +103,7 @@ module.exports = (api, options) => {
           }
         })
       }
-    }))
+    }]))
 
     if (isProduction) {
       webpackConfig.plugins.push(new ZipPlugin({
