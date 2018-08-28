@@ -5,26 +5,39 @@ const logger = require('@vue/cli-shared-utils')
 const webpack = require('webpack')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const ZipPlugin = require('zip-webpack-plugin')
-const defaultOptions = { components: {} }
+const defaultOptions = {
+  components: {},
+  componentOptions: {},
+  manifestSync: ['version']
+}
 
 module.exports = (api, options) => {
   const appRootPath = api.getCwd()
-  const pluginOptions = options.pluginOptions.browserExtension ? options.pluginOptions.browserExtension.options : defaultOptions
-  const { name, version } = require(path.join(appRootPath, 'package.json'))
+  const pluginOptions = options.pluginOptions.browserExtension ? Object.assign(defaultOptions, options.pluginOptions.browserExtension) : defaultOptions
+  const componentOptions = pluginOptions.componentOptions
+  const packageJson = require(path.join(appRootPath, 'package.json'))
   const isDevelopment = api.service.mode === 'development'
   const isProduction = api.service.mode === 'production'
   const keyFile = api.resolve('key.pem')
   const hasKeyFile = fs.existsSync(keyFile)
-  const backgroundFile = api.resolve('src/background.js')
-  const contentScriptFile = api.resolve('src/content-script.js')
 
   api.chainWebpack((webpackConfig) => {
-    webpackConfig.entryPoints
-      .delete('app').end()
-      .entry('background').add(backgroundFile).end()
-      .when(pluginOptions.components.contentScript, (config) => {
-        config.entry('content-script').add(contentScriptFile).end()
-      })
+    const config = webpackConfig.entryPoints.delete('app').end()
+    const entry = {}
+    if (pluginOptions.components.background) {
+      entry['background'] = [api.resolve(componentOptions.background.entry)]
+    }
+    if (pluginOptions.components.contentScripts) {
+      const entries = componentOptions.contentScripts.entries
+      for (const name of Object.keys(entries)) {
+        let paths = entries[name]
+        if (!Array.isArray(paths)) {
+          paths = [paths]
+        }
+        entry[name] = paths.map(path => api.resolve(path))
+      }
+    }
+    config.merge({entry})
   })
 
   api.configureWebpack((webpackConfig) => {
@@ -52,57 +65,62 @@ module.exports = (api, options) => {
       }
     }
 
-    webpackConfig.plugins.push(new CopyWebpackPlugin([
-      { from: './src/icons', to: 'icons/[name].[ext]', ignore: ['icon.xcf'] },
-      {
-        from: './src/manifest.json',
-        to: 'manifest.json',
-        transform: (content) => {
-          return new Promise((resolve, reject) => {
-            const jsonContent = JSON.parse(content)
-            jsonContent.version = version
+    webpackConfig.plugins.push(new CopyWebpackPlugin({
+      from: './src/manifest.json',
+      to: 'manifest.json',
+      transform: (content) => {
+        return new Promise((resolve, reject) => {
+          const jsonContent = JSON.parse(content)
+          if (pluginOptions.manifestSync.includes('version')) {
+            jsonContent.version = packageJson.version
+          }
+          if (pluginOptions.manifestSync.includes('description')) {
+            jsonContent.description = packageJson.description
+          }
 
-            if (isProduction) {
-              return resolve(JSON.stringify(jsonContent, null, 2))
-            }
+          if (isProduction) {
+            return resolve(JSON.stringify(jsonContent, null, 2))
+          }
 
-            jsonContent.content_security_policy = "script-src 'self' 'unsafe-eval'; object-src 'self'"
+          jsonContent.content_security_policy = "script-src 'self' 'unsafe-eval'; object-src 'self'"
 
-            try {
-              fs.statSync(keyFile)
+          try {
+            fs.statSync(keyFile)
 
-              return exec(`openssl rsa -in ${keyFile} -pubout -outform DER | openssl base64 -A`, (error, stdout) => {
-                if (error) {
-                  // node couldn't execute the command
-                  reject(error)
-                }
+            return exec(`openssl rsa -in ${keyFile} -pubout -outform DER | openssl base64 -A`, (error, stdout) => {
+              if (error) {
+                // node couldn't execute the command
+                reject(error)
+              }
 
-                jsonContent.key = stdout
-                resolve(JSON.stringify(jsonContent, null, 2))
-              })
-            } catch (error) {
-              logger.warn('No key.pem file found. This is fine for dev, however you may have problems publishing without one')
+              jsonContent.key = stdout
               resolve(JSON.stringify(jsonContent, null, 2))
-            }
-          })
-        }
+            })
+          } catch (error) {
+            logger.warn('No key.pem file found. This is fine for dev, however you may have problems publishing without one')
+            resolve(JSON.stringify(jsonContent, null, 2))
+          }
+        })
       }
-    ]))
+    }))
 
     if (isProduction) {
       webpackConfig.plugins.push(new ZipPlugin({
         path: api.resolve(`${options.outputDir || 'dist'}-zip`),
-        filename: `${name}-v${version}.zip`
+        filename: `${packageJson.name}-v${packageJson.version}.zip`
       }))
     }
 
     if (options.api === 'chrome' && isDevelopment) {
-      const entries = { background: 'background' }
+      const entries = {}
 
-      if (pluginOptions.components.contentScript) {
-        entries.contentScript = 'content-script'
+      if (pluginOptions.components.background) {
+        entries.background = 'background'
       }
 
+      if (pluginOptions.components.contentScripts) {
+        entries.contentScript = Object.keys(componentOptions.contentScripts.entries)
+      }
       const ChromeExtensionReloader = require('webpack-chrome-extension-reloader')
       webpackConfig.plugins.push(new ChromeExtensionReloader({ entries }))
     }

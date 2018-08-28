@@ -16,11 +16,14 @@ It makes some assumptions about your project setup.
 I hope to be able to scaffold an app so that identifying the below in unnecessary.
 
 ```
+|- public/
+  |- icons/
+    |- Icons for your extension. Should include a 16, 19, 38, 48, 128 px square image
 |- src/
    |- assets/
       |- Static assets in use in your app, like logo.png
-   |- icons/
-      |- Icons for your extension. Should include a 16, 19, 38, 48, 128 px square image
+   |- content_scripts
+      |- content-script.js
    |- options/ (asked during project generation)
       |- App.vue
       |- options.html
@@ -50,7 +53,6 @@ I hope to be able to scaffold an app so that identifying the below in unnecessar
       |- mutation-types.js
       |- mutations.js
    |- background.js
-   |- content-script.js
    |- manifest.json
 ```
 
@@ -84,9 +86,7 @@ Plugin options can be set inside your `vue.config.js`:
 module.exports = {
   pluginOptions: {
     browserExtension: {
-      options: {
-        // options...
-      }
+      // options...
     }
   }
 }
@@ -98,17 +98,31 @@ module.exports = {
   The browser extension components that will be managed by this plugin.
 
   Valid components are:
+  - background
   - popup
   - options
-  - contentScript
+  - contentScripts
   - standalone
 
   ```js
   components: {
-    popup: true,
-    contentScript: true
+    background: true,
+    contentScripts: true
   }
   ```
+
+- **componentOptions**
+  - Type: `Object.<string, Object>`
+
+  See [Component options](#component-options).
+
+- **manifestSync** 
+  - Type: `Array<string>` 
+  - Default: `['version']`
+  
+  Array containing names of `manifest.json` keys that will be automatically synced with `package.json` on build.
+
+  Currently, the only supported keys are `version` and `description`.
 
 - **api** 
   - Type: `'chrome'|'browser'`
@@ -128,6 +142,58 @@ module.exports = {
 
   Whether to auto import `webextension-polyfill` using Webpack's [ProvidePlugin](https://webpack.js.org/plugins/provide-plugin/).
 
+### Component options
+
+Some browser extension components have additional options which can be set as follows:
+
+```js
+// vue.config.js
+module.exports = {
+  pluginOptions: {
+    browserExtension: {
+      componentOptions: {
+        // <name of component>: <options>
+        // e.g.
+        contentScripts: {
+          entries: {
+            'content1': 'src/content-script1.js',
+            'content2': 'src/content-script2.js'
+          }
+        }
+      }
+    }
+  }
+}
+```
+
+#### background
+
+- **entry** 
+  - Type: `string|Array<string>`
+  
+  Background script as webpack entry using the [single entry shorthand syntax](https://webpack.js.org/concepts/entry-points/#single-entry-shorthand-syntax).
+
+  ```js
+  background: {
+    entry: 'src/my-background-script.js'
+  }
+  ```
+
+#### contentScripts
+
+- **entries** 
+  - Type: `{[entryChunkName: string]: string|Array<string>}`
+  
+  Content scripts as webpack entries using using the [object syntax](https://webpack.js.org/concepts/entry-points/#object-syntax).
+
+  ```js
+  contentScripts: {
+    entries: {
+      'my-first-content-script': 'src/content-script.js',
+      'my-second-content-script': 'src/my-second-script.js'
+    }
+  }
+  ```
 
 ## Testing
 This library is following the standard styling of vue projects, and those are really the only tests to perform.
