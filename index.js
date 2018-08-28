@@ -22,7 +22,7 @@ module.exports = (api, options) => {
   const hasKeyFile = fs.existsSync(keyFile)
 
   api.chainWebpack((webpackConfig) => {
-    const config = webpackConfig.entryPoints.delete('app').end()
+    webpackConfig.entryPoints.delete('app')
     const entry = {}
     if (pluginOptions.components.background) {
       entry['background'] = [api.resolve(componentOptions.background.entry)]
@@ -37,7 +37,8 @@ module.exports = (api, options) => {
         entry[name] = paths.map(path => api.resolve(path))
       }
     }
-    config.merge({entry})
+    webpackConfig.merge({entry})
+    webpackConfig.optimization.delete('splitChunks')
   })
 
   api.configureWebpack((webpackConfig) => {
