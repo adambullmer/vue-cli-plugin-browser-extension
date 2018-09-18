@@ -83,7 +83,7 @@ module.exports = (api, options) => {
             return resolve(JSON.stringify(jsonContent, null, 2))
           }
 
-          jsonContent.content_security_policy = "script-src 'self' 'unsafe-eval'; object-src 'self'"
+          jsonContent.content_security_policy = jsonContent.content_security_policy || "script-src 'self' 'unsafe-eval'; object-src 'self'"
 
           try {
             fs.statSync(keyFile)
