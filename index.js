@@ -9,7 +9,7 @@ const defaultOptions = {
   components: {},
   componentOptions: {},
   manifestSync: ['version'],
-  environmentsToZip: ['production']
+  modesToZip: ['production']
 }
 
 module.exports = (api, options) => {
@@ -106,7 +106,7 @@ module.exports = (api, options) => {
       }
     }]))
 
-    if (pluginOptions.environmentsToZip.includes(api.service.mode)) {
+    if (pluginOptions.modesToZip.includes(api.service.mode)) {
       webpackConfig.plugins.push(new ZipPlugin({
         path: api.resolve(`${options.outputDir || 'dist'}-zip`),
         filename: `${packageJson.name}-v${packageJson.version}-${api.service.mode}.zip`

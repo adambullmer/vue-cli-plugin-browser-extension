@@ -124,11 +124,11 @@ module.exports = {
 
   Currently, the only supported keys are `version` and `description`.
 
-- **environmentsToZip**
+- **modesToZip**
   - Type: `Array<string>`
   - Default: `['production']`
 
-  Array containing names of environments in which zipping up will trigger after build.
+  Array containing names of mode in which zipping up will trigger after build.
 
 - **api**
   - Type: `'chrome'|'browser'`
