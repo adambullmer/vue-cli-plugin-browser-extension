@@ -8,7 +8,8 @@ const ZipPlugin = require('zip-webpack-plugin')
 const defaultOptions = {
   components: {},
   componentOptions: {},
-  manifestSync: ['version']
+  manifestSync: ['version'],
+  environmentsToZip: ['production']
 }
 
 module.exports = (api, options) => {
@@ -105,10 +106,10 @@ module.exports = (api, options) => {
       }
     }]))
 
-    if (isProduction) {
+    if (pluginOptions.environmentsToZip.includes(api.service.mode)) {
       webpackConfig.plugins.push(new ZipPlugin({
         path: api.resolve(`${options.outputDir || 'dist'}-zip`),
-        filename: `${packageJson.name}-v${packageJson.version}.zip`
+        filename: `${packageJson.name}-v${packageJson.version}-${api.service.mode}.zip`
       }))
     }
 
