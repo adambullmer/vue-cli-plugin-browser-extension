@@ -116,24 +116,30 @@ module.exports = {
 
   See [Component options](#component-options).
 
-- **manifestSync** 
-  - Type: `Array<string>` 
+- **manifestSync**
+  - Type: `Array<string>`
   - Default: `['version']`
-  
+
   Array containing names of `manifest.json` keys that will be automatically synced with `package.json` on build.
 
   Currently, the only supported keys are `version` and `description`.
 
-- **api** 
+- **modesToZip**
+  - Type: `Array<string>`
+  - Default: `['production']`
+
+  Array containing names of mode in which zipping up will trigger after build.
+
+- **api**
   - Type: `'chrome'|'browser'`
   - Default: `'browser'`
-  
+
   Browser extension API to use.
 
 - **usePolyfill**
   - Type: `boolean`
   - Default: `true`
-  
+
   Whether to add [webextension-polyfill](https://github.com/mozilla/webextension-polyfill) to polyfill WebExtension APIs in chrome.
 
 - **autoImportPolyfill**
@@ -168,9 +174,9 @@ module.exports = {
 
 #### background
 
-- **entry** 
+- **entry**
   - Type: `string|Array<string>`
-  
+
   Background script as webpack entry using the [single entry shorthand syntax](https://webpack.js.org/concepts/entry-points/#single-entry-shorthand-syntax).
 
   ```js
@@ -181,9 +187,9 @@ module.exports = {
 
 #### contentScripts
 
-- **entries** 
+- **entries**
   - Type: `{[entryChunkName: string]: string|Array<string>}`
-  
+
   Content scripts as webpack entries using using the [object syntax](https://webpack.js.org/concepts/entry-points/#object-syntax).
 
   ```js
