@@ -11,6 +11,11 @@ const defaultOptions = {
   manifestSync: ['version'],
   modesToZip: ['production']
 }
+const performanceAssetFilterList = [
+  (file) => !(/\.map$/.test(file)),
+  (file) => !file.endsWith('.zip'),
+  (file) => !(/^icons\//.test(file))
+]
 
 module.exports = (api, options) => {
   const appRootPath = api.getCwd()
@@ -46,6 +51,11 @@ module.exports = (api, options) => {
     webpackConfig.output.filename = '[name].js'
     webpackConfig.output.chunkFilename = 'js/[id].[name].js'
     webpackConfig.node.global = false
+
+    if (webpackConfig.performance === undefined) {
+      webpackConfig.performance = {}
+    }
+    webpackConfig.performance.assetFilter = (assetFilename) => performanceAssetFilterList.every((filter) => filter(assetFilename))
 
     if (pluginOptions.autoImportPolyfill) {
       webpackConfig.plugins.push(new webpack.ProvidePlugin({
