@@ -1,5 +1,5 @@
 <template>
-  <p>Hello world!</p>
+  <h1>{{ defaultText }}</h1>
 </template>
 
 <script>
@@ -13,12 +13,11 @@ export default {
   },
   mounted () {
     <%- options.api %>.runtime.sendMessage({})
+  },
+  computed: {
+    defaultText() {
+      return <%- options.api %>.i18n.getMessage('extName');
+    }
   }
 }
 </script>
-
-<style scoped>
-p {
-  font-size: 20px;
-}
-</style>

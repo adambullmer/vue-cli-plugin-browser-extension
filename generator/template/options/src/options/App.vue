@@ -1,12 +1,17 @@
 <template>
   <div>
-    <p>Hello world!</p>
+    <p>{{ defaultText }}</p>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'App'
+  name: 'App',
+  computed: {
+    defaultText() {
+      return <%- options.api %>.i18n.getMessage('extName');
+    }
+  }
 }
 </script>
 

@@ -1,5 +1,5 @@
 <template>
-  <p>Hello world!</p>
+  <p>{{ defaultText }}</p>
 </template>
 
 <script>
@@ -13,6 +13,11 @@ export default {
   },
   mounted () {
     <%- options.api %>.runtime.sendMessage({});
+  },
+  computed: {
+    defaultText() {
+      return <%- options.api %>.i18n.getMessage('extName');
+    }
   }
 }
 </script>
