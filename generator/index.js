@@ -25,7 +25,7 @@ module.exports = (api, _options) => {
   }
 
   const appRootPath = process.cwd()
-  const { name } = require(path.join(appRootPath, 'package.json'))
+  const { name, description } = require(path.join(appRootPath, 'package.json'))
   const eslintConfig = { env: { webextensions: true } }
   const pkg = {
     private: true,
@@ -57,7 +57,7 @@ module.exports = (api, _options) => {
   }
 
   api.extendPackage(pkg)
-  api.render('./template/base-app', { name, ...options })
+  api.render('./template/base-app', { name, description, ...options })
 
   if (options.components.background) {
     api.render('./template/background', { name, ...options })

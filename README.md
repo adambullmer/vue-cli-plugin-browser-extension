@@ -201,6 +201,14 @@ module.exports = {
   }
   ```
 
+## Internationalization
+
+Some boilerplate for internationalization has been added. This follows the i18n ([chrome](https://developer.chrome.com/extensions/i18n)|[WebExtention](https://developer.mozilla.org/en-US/docs/Mozilla/Add-ons/WebExtensions/API/i18n)) spec.
+Provided for you is the `default_locale` option in the manifest, and a `_locales` directory.
+There is some basic usage of it in the manifest, as well as in some of the boilerplate files.
+Since this is largely an out of the box solution provided by the browsers, it is heavily encouraged to utilize it.
+If you do not want to translate your app, simply delete the `public/_locales` directory, and no longer use the `browser.i18n` methods.
+
 ## Testing
 This library is following the standard styling of vue projects, and those are really the only tests to perform.
 
