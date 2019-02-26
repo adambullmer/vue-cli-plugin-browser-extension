@@ -124,6 +124,22 @@ module.exports = {
 
   Currently, the only supported keys are `version` and `description`.
 
+- **manifestTransformer**
+  - Type: `Function`
+  
+  Function to modify the manifest JSON outputted by this plugin.
+
+  An example use case is adding or removing permissions depending on which browser is being targeted.
+
+  ```js
+  manifestTransformer: (manifest) => {
+    if (process.env.BROWSER === 'chrome') {
+      manifest.permissions.push('pageCapture');
+    }
+    return manifest;
+  }
+  ```
+
 - **modesToZip**
   - Type: `Array<string>`
   - Default: `['production']`
