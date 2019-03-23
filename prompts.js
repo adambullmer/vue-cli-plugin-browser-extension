@@ -28,14 +28,19 @@ module.exports = [
         short: 'content scripts'
       },
       {
+        name: 'Override Page',
+        value: 'override',
+        short: 'override'
+      },
+      {
         name: 'Standalone Tab',
         value: 'standalone',
         short: 'standalone'
-      // },
-      // {
-      //   name: 'Dev Tools Tab',
-      //   value: 'devTools',
-      //   short: 'dev tools'
+        // },
+        // {
+        //   name: 'Dev Tools Tab',
+        //   value: 'devTools',
+        //   short: 'dev tools'
       }
     ],
     filter: async (input) => {
