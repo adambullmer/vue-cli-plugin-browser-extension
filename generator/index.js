@@ -81,6 +81,15 @@ module.exports = (api, _options) => {
     }
   }
 
+  if (options.components.override) {
+    api.render('./template/override', { name, ...options })
+
+    pkg.vue.pages['override/override'] = {
+      entry: 'src/override/override.js',
+      title: 'Override'
+    }
+  }
+
   if (options.components.standalone) {
     console.log('Generating standalone app')
     api.render('./template/standalone', { name, ...options })

@@ -37,6 +37,15 @@ I hope to be able to scaffold an app so that identifying the below in unnecessar
       |- App.vue
       |- popup.html
       |- popup.js
+   |- override/
+      |- router/
+         |- pages/
+            |- Index.vue
+         |- index.js
+         |- routes.js
+      |- App.vue
+      |- override.html
+      |- override.js
    |- standalone/
       |- router/
          |- pages/
@@ -102,6 +111,7 @@ module.exports = {
   - popup
   - options
   - contentScripts
+  - override
   - standalone
 
   ```js
