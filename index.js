@@ -123,18 +123,18 @@ module.exports = (api, options) => {
       }))
     }
 
-    if (options.api === 'chrome' && isDevelopment) {
-      const entries = {}
+    // configure webpack-extension-reloader for automatic reloading of extension when content and background scripts change (not HMR)
+    // enabled only when webpack mode === 'development'
+    const entries = {}
 
-      if (pluginOptions.components.background) {
-        entries.background = 'background'
-      }
-
-      if (pluginOptions.components.contentScripts) {
-        entries.contentScript = Object.keys(componentOptions.contentScripts.entries)
-      }
-      const ChromeExtensionReloader = require('webpack-chrome-extension-reloader')
-      webpackConfig.plugins.push(new ChromeExtensionReloader({ entries }))
+    if (pluginOptions.components.background) {
+      entries.background = 'background'
     }
+
+    if (pluginOptions.components.contentScripts) {
+      entries.contentScript = Object.keys(componentOptions.contentScripts.entries)
+    }
+    const ExtensionReloader = require('webpack-extension-reloader')
+    webpackConfig.plugins.push(new ExtensionReloader({ entries }))
   })
 }
