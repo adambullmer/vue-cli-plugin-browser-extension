@@ -19,7 +19,7 @@
   "repository": "git@github.com:adambullmer/vue-cli-plugin-browser-extension.git",
   "author": "Adam Bullmer <psycodrumfreak@gmail.com>",
   "devDependencies": {
-    "@vue/eslint-config-standard": "^3.0.0-rc.3",
+    "@vue/eslint-config-standard": "^3.0.0",
     "eslint": "^5.1.0",
     "eslint-plugin-vue": "^4.5.0"
   },

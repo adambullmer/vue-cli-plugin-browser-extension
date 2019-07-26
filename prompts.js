@@ -74,13 +74,13 @@ module.exports = [
     type: 'confirm',
     message: 'Add WebExtension polyfill?',
     default: true,
-    when: answers => answers.api === 'browser'
+    when: (answers) => answers.api === 'browser'
   },
   {
     name: 'autoImportPolyfill',
     type: 'confirm',
     message: 'Make polyfill available without import?',
     default: true,
-    when: answers => answers.usePolyfill
+    when: (answers) => answers.usePolyfill
   }
 ]

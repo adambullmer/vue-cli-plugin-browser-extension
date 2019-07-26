@@ -1,13 +1,13 @@
 {
-    "com": {
-        "rewardstyle": {
-            "browserExt": {
-                "tasks": {
-                    "extServe": {
-                        "description": "Builds and watches the project, writing the files to the output directory"
-                    }
-                }
-            }
+  "com": {
+    "adambullmer": {
+      "browserExt": {
+        "tasks": {
+          "extServe": {
+            "description": "Builds and watches the project, writing the files to the output directory"
+          }
         }
+      }
     }
+  }
 }

@@ -12,17 +12,18 @@ const defaultOptions = {
   modesToZip: ['production']
 }
 const performanceAssetFilterList = [
-  (file) => !(/\.map$/.test(file)),
+  (file) => !/\.map$/.test(file),
   (file) => !file.endsWith('.zip'),
-  (file) => !(/^icons\//.test(file))
+  (file) => !/^icons\//.test(file)
 ]
 
 module.exports = (api, options) => {
   const appRootPath = api.getCwd()
-  const pluginOptions = options.pluginOptions.browserExtension ? Object.assign(defaultOptions, options.pluginOptions.browserExtension) : defaultOptions
+  const pluginOptions = options.pluginOptions.browserExtension
+    ? Object.assign(defaultOptions, options.pluginOptions.browserExtension)
+    : defaultOptions
   const componentOptions = pluginOptions.componentOptions
   const packageJson = require(path.join(appRootPath, 'package.json'))
-  const isDevelopment = api.service.mode === 'development'
   const isProduction = api.service.mode === 'production'
   const keyFile = api.resolve('key.pem')
   const hasKeyFile = fs.existsSync(keyFile)
@@ -40,10 +41,10 @@ module.exports = (api, options) => {
         if (!Array.isArray(paths)) {
           paths = [paths]
         }
-        entry[name] = paths.map(path => api.resolve(path))
+        entry[name] = paths.map((path) => api.resolve(path))
       }
     }
-    webpackConfig.merge({entry})
+    webpackConfig.merge({ entry })
     webpackConfig.optimization.delete('splitChunks')
   })
 
@@ -55,16 +56,19 @@ module.exports = (api, options) => {
     if (webpackConfig.performance === undefined) {
       webpackConfig.performance = {}
     }
-    webpackConfig.performance.assetFilter = (assetFilename) => performanceAssetFilterList.every((filter) => filter(assetFilename))
+    webpackConfig.performance.assetFilter = (assetFilename) =>
+      performanceAssetFilterList.every((filter) => filter(assetFilename))
 
     if (pluginOptions.autoImportPolyfill) {
-      webpackConfig.plugins.push(new webpack.ProvidePlugin({
-        'browser': 'webextension-polyfill'
-      }))
+      webpackConfig.plugins.push(
+        new webpack.ProvidePlugin({
+          browser: 'webextension-polyfill'
+        })
+      )
 
       // Workaround for https://github.com/mozilla/webextension-polyfill/issues/68
       webpackConfig.module.rules.push({
-        test: require.resolve('webextension-polyfill', {paths: [appRootPath]}),
+        test: require.resolve('webextension-polyfill', { paths: [appRootPath] }),
         use: 'imports-loader?browser=>undefined'
       })
     }
@@ -77,50 +81,59 @@ module.exports = (api, options) => {
       }
     }
 
-    webpackConfig.plugins.push(new CopyWebpackPlugin([{
-      from: './src/manifest.json',
-      to: 'manifest.json',
-      transform: (content) => {
-        return new Promise((resolve, reject) => {
-          const jsonContent = JSON.parse(content)
-          if (pluginOptions.manifestSync.includes('version')) {
-            jsonContent.version = packageJson.version
-          }
-          if (pluginOptions.manifestSync.includes('description')) {
-            jsonContent.description = packageJson.description
-          }
-
-          if (isProduction) {
-            return resolve(JSON.stringify(jsonContent, null, 2))
-          }
-
-          jsonContent.content_security_policy = jsonContent.content_security_policy || "script-src 'self' 'unsafe-eval'; object-src 'self'"
-
-          try {
-            fs.statSync(keyFile)
-
-            return exec(`openssl rsa -in ${keyFile} -pubout -outform DER | openssl base64 -A`, (error, stdout) => {
-              if (error) {
-                // node couldn't execute the command
-                reject(error)
+    webpackConfig.plugins.push(
+      new CopyWebpackPlugin([
+        {
+          from: './src/manifest.json',
+          to: 'manifest.json',
+          transform: (content) => {
+            return new Promise((resolve, reject) => {
+              const jsonContent = JSON.parse(content)
+              if (pluginOptions.manifestSync.includes('version')) {
+                jsonContent.version = packageJson.version
+              }
+              if (pluginOptions.manifestSync.includes('description')) {
+                jsonContent.description = packageJson.description
               }
 
-              jsonContent.key = stdout
-              resolve(JSON.stringify(jsonContent, null, 2))
+              if (isProduction) {
+                return resolve(JSON.stringify(jsonContent, null, 2))
+              }
+
+              jsonContent.content_security_policy =
+                jsonContent.content_security_policy || "script-src 'self' 'unsafe-eval'; object-src 'self'"
+
+              try {
+                fs.statSync(keyFile)
+
+                return exec(`openssl rsa -in ${keyFile} -pubout -outform DER | openssl base64 -A`, (error, stdout) => {
+                  if (error) {
+                    // node couldn't execute the command
+                    reject(error)
+                  }
+
+                  jsonContent.key = stdout
+                  resolve(JSON.stringify(jsonContent, null, 2))
+                })
+              } catch (error) {
+                logger.warn(
+                  'No key.pem file found. This is fine for dev, however you may have problems publishing without one'
+                )
+                resolve(JSON.stringify(jsonContent, null, 2))
+              }
             })
-          } catch (error) {
-            logger.warn('No key.pem file found. This is fine for dev, however you may have problems publishing without one')
-            resolve(JSON.stringify(jsonContent, null, 2))
           }
-        })
-      }
-    }]))
+        }
+      ])
+    )
 
     if (pluginOptions.modesToZip.includes(api.service.mode)) {
-      webpackConfig.plugins.push(new ZipPlugin({
-        path: api.resolve(`${options.outputDir || 'dist'}-zip`),
-        filename: `${packageJson.name}-v${packageJson.version}-${api.service.mode}.zip`
-      }))
+      webpackConfig.plugins.push(
+        new ZipPlugin({
+          path: api.resolve(`${options.outputDir || 'dist'}-zip`),
+          filename: `${packageJson.name}-v${packageJson.version}-${api.service.mode}.zip`
+        })
+      )
     }
 
     // configure webpack-extension-reloader for automatic reloading of extension when content and background scripts change (not HMR)

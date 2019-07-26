@@ -30,11 +30,11 @@ module.exports = (api, _options) => {
   const pkg = {
     private: true,
     scripts: {
-      'serve': 'vue-cli-service build --mode development --watch'
+      serve: 'vue-cli-service build --mode development --watch'
     },
     dependencies: {
       'vue-router': '^3.0.1',
-      'vuex': '^3.0.1'
+      vuex: '^3.0.1'
     },
     vue: {
       pages: {},
