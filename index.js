@@ -18,9 +18,9 @@ const performanceAssetFilterList = [
   (file) => !/^icons\//.test(file)
 ]
 
-function getManifestJsonString(pluginOptions, jsonContent) {
+function getManifestJsonString (pluginOptions, jsonContent) {
   if (pluginOptions.manifestTransformer) {
-    const jsonContentCopy = Object.assign({}, jsonContent);
+    const jsonContentCopy = Object.assign({}, jsonContent)
     jsonContent = pluginOptions.manifestTransformer(jsonContentCopy)
   }
   return JSON.stringify(jsonContent, null, 2)

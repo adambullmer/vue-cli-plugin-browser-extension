@@ -1,7 +1,9 @@
 # vue-cli-plugin-browser-extension
+
 Browser extension development plugin for vue-cli 3.x
 
 ## What does it do?
+
 This is intended to be a vue-cli@3.x replacement for [https://github.com/Kocal/vue-web-extension](https://github.com/Kocal/vue-web-extension).
 
 This plugin changes the `serve` command for your vue applications.
@@ -73,6 +75,7 @@ This can be added to your vuejs project by one of the following methods:
 - Using the vue cli `vue add browser-extension` command
 
 ## Usage
+
 Running the Livereload server.
 This will build and write to the local `dist` directory.
 
@@ -96,17 +99,19 @@ module.exports = {
   pluginOptions: {
     browserExtension: {
       // options...
-    }
-  }
-}
+    },
+  },
+};
 ```
 
 - **components**
+
   - Type: `Object.<string, boolean>`
 
   The browser extension components that will be managed by this plugin.
 
   Valid components are:
+
   - background
   - popup
   - options
@@ -122,11 +127,13 @@ module.exports = {
   ```
 
 - **componentOptions**
+
   - Type: `Object.<string, Object>`
 
   See [Component options](#component-options).
 
 - **manifestSync**
+
   - Type: `Array<string>`
   - Default: `['version']`
 
@@ -135,8 +142,9 @@ module.exports = {
   Currently, the only supported keys are `version` and `description`.
 
 - **manifestTransformer**
+
   - Type: `Function`
-  
+
   Function to modify the manifest JSON outputted by this plugin.
 
   An example use case is adding or removing permissions depending on which browser is being targeted.
@@ -147,28 +155,32 @@ module.exports = {
       manifest.permissions.push('pageCapture');
     }
     return manifest;
-  }
+  };
   ```
 
 - **modesToZip**
+
   - Type: `Array<string>`
   - Default: `['production']`
 
   Array containing names of mode in which zipping up will trigger after build.
 
 - **api**
+
   - Type: `'chrome'|'browser'`
   - Default: `'browser'`
 
   Browser extension API to use.
 
 - **usePolyfill**
+
   - Type: `boolean`
   - Default: `true`
 
   Whether to add [webextension-polyfill](https://github.com/mozilla/webextension-polyfill) to polyfill WebExtension APIs in chrome.
 
 - **autoImportPolyfill**
+
   - Type: `boolean`
   - Default: `true`
 
@@ -188,32 +200,34 @@ module.exports = {
         // e.g.
         contentScripts: {
           entries: {
-            'content1': 'src/content-script1.js',
-            'content2': 'src/content-script2.js'
-          }
-        }
-      }
-    }
-  }
-}
+            content1: 'src/content-script1.js',
+            content2: 'src/content-script2.js',
+          },
+        },
+      },
+    },
+  },
+};
 ```
 
 #### background
 
 - **entry**
+
   - Type: `string|Array<string>`
 
   Background script as webpack entry using the [single entry shorthand syntax](https://webpack.js.org/concepts/entry-points/#single-entry-shorthand-syntax).
 
   ```js
   background: {
-    entry: 'src/my-background-script.js'
+    entry: 'src/my-background-script.js';
   }
   ```
 
 #### contentScripts
 
 - **entries**
+
   - Type: `{[entryChunkName: string]: string|Array<string>}`
 
   Content scripts as webpack entries using using the [object syntax](https://webpack.js.org/concepts/entry-points/#object-syntax).
@@ -236,6 +250,7 @@ Since this is largely an out of the box solution provided by the browsers, it is
 If you do not want to translate your app, simply delete the `public/_locales` directory, and no longer use the `browser.i18n` methods.
 
 ## Testing
+
 This library is following the standard styling of vue projects, and those are really the only tests to perform.
 
 ```sh
@@ -243,6 +258,7 @@ yarn test
 ```
 
 ## Roadmap
+
 - Add some generator options for other pieces of browser extensions. This includes scaffolding the components/dirs, and registering the build options into the build time hooks.
   - Dev Tools
 - A preset
@@ -250,6 +266,7 @@ yarn test
 - Cleanup the dist-zip directory
 
 ## Credits
+
 - [https://github.com/Kocal/vue-web-extension](https://github.com/Kocal/vue-web-extension) For inspiration on app and build structure
 - [https://github.com/YuraDev/vue-chrome-extension-template](https://github.com/YuraDev/vue-chrome-extension-template) For the logo crop and app/scaffold structure
 - [@YuraDev](https://github.com/YuraDev) for the wonderful WCER plugin for livereloading extensions
