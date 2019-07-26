@@ -12,30 +12,42 @@
   "permissions": [
     <%_ if (options.components.contentScripts) { -%>
     "activeTab",
-    <%_ } -%>
+    <%_
+    } -%>
     "<all_urls>",
     "*://*/*"
   ],
   <%_ if (options.components.background) { -%>
   "background": {
-    "scripts": ["background.js"],
-    "persistent": false
-  },
-  <%_ } -%>
+      "scripts": [
+        "background.js"
+      ],
+      "persistent": false
+    },
+  <%_
+  } -%>
   "browser_action": {
     <%_ if (options.components.popup) { -%>
     "default_popup": "popup/popup.html",
-    <%_ } -%>
+    <%_
+    } -%>
     "default_title": "__MSG_extName__",
     "default_icon": {
       "19": "icons/19.png",
       "38": "icons/38.png"
     }
   <%_ if (options.components.options) { -%>
-  },
-  "options_ui": {
-    "page": "options/options.html",
-    "<%- options.api %>_style": true
-  <%_ } -%>
+    },
+    "options_ui": {
+      "page": "options/options.html",
+      "<%- options.api %>_style": true
+  <%_
+    } -%>
   }
+   <%_ if (options.components.override) { -%>
+  "chrome_url_overrides": {
+      "<%- options.components.overrideOption || 'newtab' %>": "override/override.html"
+    }
+  <%_
+  } -%>
 }

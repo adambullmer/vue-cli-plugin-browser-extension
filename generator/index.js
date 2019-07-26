@@ -30,11 +30,11 @@ module.exports = (api, _options) => {
   const pkg = {
     private: true,
     scripts: {
-      'serve': 'vue-cli-service build --mode development --watch'
+      serve: 'vue-cli-service build --mode development --watch'
     },
     dependencies: {
       'vue-router': '^3.0.1',
-      'vuex': '^3.0.1'
+      vuex: '^3.0.1'
     },
     vue: {
       pages: {},
@@ -68,6 +68,7 @@ module.exports = (api, _options) => {
 
     pkg.vue.pages['popup/popup'] = {
       entry: 'src/popup/popup.js',
+      template: 'src/popup/popup.html',
       title: 'Popup'
     }
   }
@@ -77,7 +78,18 @@ module.exports = (api, _options) => {
 
     pkg.vue.pages['options/options'] = {
       entry: 'src/options/options.js',
+      template: 'src/options/options.html',
       title: 'Options'
+    }
+  }
+
+  if (options.components.override) {
+    api.render('./template/override', { name, ...options })
+
+    pkg.vue.pages['override/override'] = {
+      entry: 'src/override/override.js',
+      template: 'src/override/override.html',
+      title: 'Override'
     }
   }
 
@@ -87,6 +99,7 @@ module.exports = (api, _options) => {
 
     pkg.vue.pages['standalone/standalone'] = {
       entry: 'src/standalone/standalone.js',
+      template: 'src/standalone/standalone.html',
       filename: 'app.html',
       title: name
     }
