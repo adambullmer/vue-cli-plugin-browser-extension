@@ -9,13 +9,22 @@ const defaultOptions = {
   components: {},
   componentOptions: {},
   manifestSync: ['version'],
-  modesToZip: ['production']
+  modesToZip: ['production'],
+  manifestTransformer: null
 }
 const performanceAssetFilterList = [
   (file) => !/\.map$/.test(file),
   (file) => !file.endsWith('.zip'),
   (file) => !/^icons\//.test(file)
 ]
+
+function getManifestJsonString(pluginOptions, jsonContent) {
+  if (pluginOptions.manifestTransformer) {
+    const jsonContentCopy = Object.assign({}, jsonContent);
+    jsonContent = pluginOptions.manifestTransformer(jsonContentCopy)
+  }
+  return JSON.stringify(jsonContent, null, 2)
+}
 
 module.exports = (api, options) => {
   const appRootPath = api.getCwd()
@@ -97,7 +106,7 @@ module.exports = (api, options) => {
               }
 
               if (isProduction) {
-                return resolve(JSON.stringify(jsonContent, null, 2))
+                return resolve(getManifestJsonString(pluginOptions, jsonContent))
               }
 
               jsonContent.content_security_policy =
@@ -113,13 +122,13 @@ module.exports = (api, options) => {
                   }
 
                   jsonContent.key = stdout
-                  resolve(JSON.stringify(jsonContent, null, 2))
+                  resolve(getManifestJsonString(pluginOptions, jsonContent))
                 })
               } catch (error) {
                 logger.warn(
                   'No key.pem file found. This is fine for dev, however you may have problems publishing without one'
                 )
-                resolve(JSON.stringify(jsonContent, null, 2))
+                resolve(getManifestJsonString(pluginOptions, jsonContent))
               }
             })
           }
