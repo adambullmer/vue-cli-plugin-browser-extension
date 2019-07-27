@@ -20,17 +20,26 @@ I hope to be able to scaffold an app so that identifying the below in unnecessar
 ```
 |- public/
   |- icons/
-    |- Icons for your extension. Should include a 16, 19, 38, 48, 128 px square image
+    |- Icons for your extension. Should include a 16, 19, 38, 48, and 128px square image
 |- src/
    |- assets/
       |- Static assets in use in your app, like logo.png
    |- content_scripts
       |- content-script.js
+   |- devtools/ (asked during project generation)
+      |- router/
+         |- pages/
+            |- Index.vue
+         |- index.js
+         |- routes.js
+      |- App.vue
+      |- devtools.html
+      |- devtools.js
    |- options/ (asked during project generation)
       |- App.vue
       |- options.html
       |- options.js
-   |- popup/
+   |- popup/ (asked during project generation)
       |- router/
          |- pages/
             |- Index.vue
@@ -39,7 +48,7 @@ I hope to be able to scaffold an app so that identifying the below in unnecessar
       |- App.vue
       |- popup.html
       |- popup.js
-   |- override/
+   |- override/ (asked during project generation)
       |- router/
          |- pages/
             |- Index.vue
@@ -48,7 +57,7 @@ I hope to be able to scaffold an app so that identifying the below in unnecessar
       |- App.vue
       |- override.html
       |- override.js
-   |- standalone/
+   |- standalone/ (asked during project generation)
       |- router/
          |- pages/
             |- Index.vue
@@ -118,6 +127,7 @@ module.exports = {
   - contentScripts
   - override
   - standalone
+  - devtools
 
   ```js
   components: {

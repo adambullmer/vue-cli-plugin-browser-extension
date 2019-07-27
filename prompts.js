@@ -36,11 +36,11 @@ module.exports = [
         name: 'Standalone Tab',
         value: 'standalone',
         short: 'standalone'
-        // },
-        // {
-        //   name: 'Dev Tools Tab',
-        //   value: 'devTools',
-        //   short: 'dev tools'
+      },
+      {
+        name: 'Dev Tools Tab',
+        value: 'devtools',
+        short: 'dev tools'
       }
     ],
     filter: async (input) => {

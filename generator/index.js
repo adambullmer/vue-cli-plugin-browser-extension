@@ -52,7 +52,6 @@ module.exports = (api, _options) => {
   }
 
   if (api.hasPlugin('eslint')) {
-    console.log('Adding eslint config stuffs')
     pkg.eslintConfig = eslintConfig
   }
 
@@ -94,7 +93,6 @@ module.exports = (api, _options) => {
   }
 
   if (options.components.standalone) {
-    console.log('Generating standalone app')
     api.render('./template/standalone', { name, ...options })
 
     pkg.vue.pages['standalone/standalone'] = {
@@ -102,6 +100,16 @@ module.exports = (api, _options) => {
       template: 'src/standalone/standalone.html',
       filename: 'app.html',
       title: name
+    }
+  }
+
+  if (options.components.devtools) {
+    api.render('./template/devtools', { name, ...options })
+
+    pkg.vue.pages['devtools/devtools'] = {
+      entry: 'src/devtools/devtools.js',
+      template: 'src/devtools/devtools.html',
+      title: 'Devtools'
     }
   }
 

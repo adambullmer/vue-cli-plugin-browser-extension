@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "__MSG_extName__",
-  "homepage_url": "http://localhost/",
+  "homepage_url": "http://localhost:8080/",
   "description": "A Vue Browser Extension",
   "default_locale": "en",
   "permissions": [
@@ -24,6 +24,9 @@
     "persistent": false
   <%_ } -%>
   },
+  <%_ if (options.components.devtools) { -%>
+  "devtools_page": "devtools/devtools.html",
+  <%_ } -%>
   "browser_action": {
     <%_ if (options.components.popup) { -%>
     "default_popup": "popup/popup.html",
