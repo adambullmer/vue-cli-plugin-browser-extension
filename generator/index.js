@@ -45,7 +45,7 @@ module.exports = (api, _options) => {
   }
 
   if (options.usePolyfill) {
-    pkg.dependencies['webextension-polyfill'] = '^0.3.0'
+    pkg.dependencies['webextension-polyfill'] = '^0.4.0'
     pkg.devDependencies = {
       'imports-loader': '^0.8.0'
     }
