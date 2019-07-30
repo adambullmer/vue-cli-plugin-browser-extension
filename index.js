@@ -4,6 +4,7 @@ const { exec } = require('child_process')
 const logger = require('@vue/cli-shared-utils')
 const webpack = require('webpack')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
+const ExtensionReloader = require('webpack-extension-reloader')
 const ZipPlugin = require('zip-webpack-plugin')
 const defaultOptions = {
   components: {},
@@ -156,7 +157,8 @@ module.exports = (api, options) => {
     if (pluginOptions.components.contentScripts) {
       entries.contentScript = Object.keys(componentOptions.contentScripts.entries)
     }
-    const ExtensionReloader = require('webpack-extension-reloader')
-    webpackConfig.plugins.push(new ExtensionReloader({ entries }))
+    if (!isProduction) {
+      webpackConfig.plugins.push(new ExtensionReloader({ entries }))
+    }
   })
 }
