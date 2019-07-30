@@ -96,42 +96,44 @@ module.exports = (api, options) => {
         {
           from: './src/manifest.json',
           to: 'manifest.json',
-          transform: (content) => {
-            return new Promise((resolve, reject) => {
-              const jsonContent = JSON.parse(content)
-              if (pluginOptions.manifestSync.includes('version')) {
-                jsonContent.version = packageJson.version
-              }
-              if (pluginOptions.manifestSync.includes('description')) {
-                jsonContent.description = packageJson.description
-              }
+          transform: async (content) => {
+            const jsonContent = JSON.parse(content)
+            if (pluginOptions.manifestSync.includes('version')) {
+              jsonContent.version = packageJson.version
+            }
+            if (pluginOptions.manifestSync.includes('description')) {
+              jsonContent.description = packageJson.description
+            }
 
-              if (isProduction) {
-                return resolve(getManifestJsonString(pluginOptions, jsonContent))
-              }
+            if (isProduction) {
+              return getManifestJsonString(pluginOptions, jsonContent)
+            }
 
-              jsonContent.content_security_policy =
-                jsonContent.content_security_policy || "script-src 'self' 'unsafe-eval'; object-src 'self'"
+            jsonContent.content_security_policy =
+              jsonContent.content_security_policy || "script-src 'self' 'unsafe-eval'; object-src 'self'"
 
+            if (hasKeyFile) {
               try {
-                fs.statSync(keyFile)
-
-                return exec(`openssl rsa -in ${keyFile} -pubout -outform DER | openssl base64 -A`, (error, stdout) => {
-                  if (error) {
-                    // node couldn't execute the command
-                    reject(error)
-                  }
-
-                  jsonContent.key = stdout
-                  resolve(getManifestJsonString(pluginOptions, jsonContent))
+                jsonContent.key = await new Promise((resolve, reject) => {
+                  exec(`openssl rsa -in ${keyFile} -pubout -outform DER | openssl base64 -A`, (error, stdout) => {
+                    if (error) {
+                      // node couldn't execute the command
+                      return reject(error)
+                    }
+                    resolve(stdout)
+                  })
                 })
               } catch (error) {
-                logger.warn(
-                  'No key.pem file found. This is fine for dev, however you may have problems publishing without one'
-                )
-                resolve(getManifestJsonString(pluginOptions, jsonContent))
+                logger.error('Unexpected error hashing keyfile:', error)
               }
-            })
+            }
+            if (!jsonContent.key) {
+              logger.warn(
+                'No key.pem file found. This is fine for dev, however you may have problems publishing without one'
+              )
+            }
+
+            return getManifestJsonString(pluginOptions, jsonContent)
           }
         }
       ])
