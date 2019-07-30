@@ -270,7 +270,6 @@ yarn test
 ## Roadmap
 
 - Add some generator options for other pieces of browser extensions. This includes scaffolding the components/dirs, and registering the build options into the build time hooks.
-  - Dev Tools
 - A preset
 - Key Generation
 - Cleanup the dist-zip directory
