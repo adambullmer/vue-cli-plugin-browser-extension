@@ -76,6 +76,10 @@ I hope to be able to scaffold an app so that identifying the below in unnecessar
    |- manifest.json
 ```
 
+## System Dependencies
+
+If you wish to use the signing key functionality you will need to have `openssl` available on your system.
+
 ## Adding to your project
 
 This can be added to your vuejs project by one of the following methods:
@@ -269,9 +273,7 @@ yarn test
 
 ## Roadmap
 
-- Add some generator options for other pieces of browser extensions. This includes scaffolding the components/dirs, and registering the build options into the build time hooks.
 - A preset
-- Key Generation
 - Cleanup the dist-zip directory
 
 ## Credits

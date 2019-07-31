@@ -1,11 +1,10 @@
 const path = require('path')
-const fs = require('fs')
-const { exec } = require('child_process')
 const logger = require('@vue/cli-shared-utils')
 const webpack = require('webpack')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const ExtensionReloader = require('webpack-extension-reloader')
 const ZipPlugin = require('zip-webpack-plugin')
+const { keyExists, hashKey } = require('./lib/signing-key')
 const defaultOptions = {
   components: {},
   componentOptions: {},
@@ -36,7 +35,7 @@ module.exports = (api, options) => {
   const packageJson = require(path.join(appRootPath, 'package.json'))
   const isProduction = api.service.mode === 'production'
   const keyFile = api.resolve('key.pem')
-  const hasKeyFile = fs.existsSync(keyFile)
+  const hasKeyFile = keyExists(keyFile)
 
   api.chainWebpack((webpackConfig) => {
     webpackConfig.entryPoints.delete('app')
@@ -114,15 +113,7 @@ module.exports = (api, options) => {
 
             if (hasKeyFile) {
               try {
-                jsonContent.key = await new Promise((resolve, reject) => {
-                  exec(`openssl rsa -in ${keyFile} -pubout -outform DER | openssl base64 -A`, (error, stdout) => {
-                    if (error) {
-                      // node couldn't execute the command
-                      return reject(error)
-                    }
-                    resolve(stdout)
-                  })
-                })
+                jsonContent.key = await hashKey(keyFile)
               } catch (error) {
                 logger.error('Unexpected error hashing keyfile:', error)
               }

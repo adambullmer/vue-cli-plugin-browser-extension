@@ -1,5 +1,6 @@
 const fs = require('fs')
 const path = require('path')
+const { generateKey } = require('../lib/signing-key')
 const gitignoreSnippet = `
 # Vue Browser Extension Output
 *.pem
@@ -115,6 +116,12 @@ module.exports = (api, _options) => {
 
   if (options.components.contentScripts) {
     api.render('./template/content-script', { ...options })
+  }
+
+  if (options.generateSigningKey === true) {
+    api.render((files) => {
+      files['key.pem'] = generateKey()
+    })
   }
 
   api.onCreateComplete(() => {

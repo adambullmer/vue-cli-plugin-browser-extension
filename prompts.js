@@ -82,5 +82,11 @@ module.exports = [
     message: 'Make polyfill available without import?',
     default: true,
     when: (answers) => answers.usePolyfill
+  },
+  {
+    name: 'generateSigningKey',
+    type: 'confirm',
+    message: 'Generate a new signing key (danger)?',
+    default: false
   }
 ]
