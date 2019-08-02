@@ -65,6 +65,14 @@ module.exports = (api, options) => {
     )
     webpackConfig.merge({ entry })
 
+    if (isProduction) {
+      if (hasKeyFile) {
+        webpackConfig.plugin('copy-signing-key').use(CopyWebpackPlugin, [[{ from: keyFile, to: 'key.pem' }]])
+      } else {
+        logger.warn('No `key.pem` file detected. This is problematic only if you are publishing an existing extension')
+      }
+    }
+
     if (pluginOptions.modesToZip.includes(api.service.mode)) {
       webpackConfig.plugin('zip-browser-extension').use(ZipPlugin, [
         {
@@ -108,14 +116,6 @@ module.exports = (api, options) => {
         test: require.resolve('webextension-polyfill', { paths: [appRootPath] }),
         use: 'imports-loader?browser=>undefined'
       })
-    }
-
-    if (isProduction) {
-      if (hasKeyFile) {
-        webpackConfig.plugins.push(new CopyWebpackPlugin([{ from: keyFile, to: 'key.pem' }]))
-      } else {
-        logger.warn('No `key.pem` file detected. This is problematic only if you are publishing an existing extension')
-      }
     }
 
     webpackConfig.plugins.push(
