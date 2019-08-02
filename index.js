@@ -65,6 +65,48 @@ module.exports = (api, options) => {
     )
     webpackConfig.merge({ entry })
 
+    webpackConfig.plugin('copy-manifest').use(CopyWebpackPlugin, [
+      [
+        {
+          from: './src/manifest.json',
+          to: 'manifest.json',
+          transform: async (content) => {
+            const jsonContent = JSON.parse(content)
+            if (pluginOptions.manifestSync.includes('version')) {
+              jsonContent.version = packageJson.version
+            }
+            if (pluginOptions.manifestSync.includes('description')) {
+              jsonContent.description = packageJson.description
+            }
+
+            // If building for production (going to web store) abort early.
+            // The browser extension store will hash your signing key and apply CSP policies.
+            if (isProduction) {
+              return getManifestJsonString(pluginOptions, jsonContent)
+            }
+
+            jsonContent.content_security_policy =
+              jsonContent.content_security_policy || "script-src 'self' 'unsafe-eval'; object-src 'self'"
+
+            if (hasKeyFile) {
+              try {
+                jsonContent.key = await hashKey(keyFile)
+              } catch (error) {
+                logger.error('Unexpected error hashing keyfile:', error)
+              }
+            }
+            if (!jsonContent.key) {
+              logger.warn(
+                'No key.pem file found. This is fine for dev, however you may have problems publishing without one'
+              )
+            }
+
+            return getManifestJsonString(pluginOptions, jsonContent)
+          }
+        }
+      ]
+    ])
+
     if (pluginOptions.autoImportPolyfill) {
       webpackConfig.plugin('provide-webextension-polyfill').use(webpack.ProvidePlugin, [
         {
@@ -118,45 +160,5 @@ module.exports = (api, options) => {
     }
 
     webpackConfig.node.global = false
-
-    webpackConfig.plugins.push(
-      new CopyWebpackPlugin([
-        {
-          from: './src/manifest.json',
-          to: 'manifest.json',
-          transform: async (content) => {
-            const jsonContent = JSON.parse(content)
-            if (pluginOptions.manifestSync.includes('version')) {
-              jsonContent.version = packageJson.version
-            }
-            if (pluginOptions.manifestSync.includes('description')) {
-              jsonContent.description = packageJson.description
-            }
-
-            if (isProduction) {
-              return getManifestJsonString(pluginOptions, jsonContent)
-            }
-
-            jsonContent.content_security_policy =
-              jsonContent.content_security_policy || "script-src 'self' 'unsafe-eval'; object-src 'self'"
-
-            if (hasKeyFile) {
-              try {
-                jsonContent.key = await hashKey(keyFile)
-              } catch (error) {
-                logger.error('Unexpected error hashing keyfile:', error)
-              }
-            }
-            if (!jsonContent.key) {
-              logger.warn(
-                'No key.pem file found. This is fine for dev, however you may have problems publishing without one'
-              )
-            }
-
-            return getManifestJsonString(pluginOptions, jsonContent)
-          }
-        }
-      ])
-    )
   })
 }
