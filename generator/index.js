@@ -20,7 +20,7 @@ module.exports = (api, _options) => {
   if (options.components.contentScripts) {
     options.componentOptions.contentScripts = {
       entries: {
-        'content_scripts/content-script': ['src/content_scripts/content-script.js']
+        'content-script': ['src/content-scripts/content-script.js']
       }
     }
   }
@@ -115,7 +115,7 @@ module.exports = (api, _options) => {
   }
 
   if (options.components.contentScripts) {
-    api.render('./template/content-script', { ...options })
+    api.render('./template/content-scripts', { ...options })
   }
 
   if (options.generateSigningKey === true) {
