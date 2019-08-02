@@ -58,7 +58,6 @@ module.exports = (api, options) => {
   const userScripts = Object.keys(entry)
 
   api.chainWebpack((webpackConfig) => {
-    webpackConfig.entryPoints.delete('app')
     // Ignore rewriting names for background and content scripts
     webpackConfig.output.filename((file) =>
       userScripts.includes(file.chunk.name) || !isProduction ? 'js/[name].js' : 'js/[name].[contenthash:8].js'
