@@ -158,7 +158,5 @@ module.exports = (api, options) => {
       webpackConfig.optimization.splitChunks.cacheGroups.vendors.chunks = omitUserScripts
       webpackConfig.optimization.splitChunks.cacheGroups.common.chunks = omitUserScripts
     }
-
-    webpackConfig.node.global = false
   })
 }
