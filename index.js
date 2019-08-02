@@ -66,6 +66,11 @@ module.exports = (api, options) => {
     webpackConfig.merge({ entry })
 
     if (isProduction) {
+      // Silence warnings of known large files, like images, sourcemaps, and the zip artifact
+      webpackConfig.performance.assetFilter((assetFilename) =>
+        performanceAssetFilterList.every((filter) => filter(assetFilename))
+      )
+
       if (hasKeyFile) {
         webpackConfig.plugin('copy-signing-key').use(CopyWebpackPlugin, [[{ from: keyFile, to: 'key.pem' }]])
       } else {
@@ -97,12 +102,6 @@ module.exports = (api, options) => {
     }
 
     webpackConfig.node.global = false
-
-    if (webpackConfig.performance === undefined) {
-      webpackConfig.performance = {}
-    }
-    webpackConfig.performance.assetFilter = (assetFilename) =>
-      performanceAssetFilterList.every((filter) => filter(assetFilename))
 
     if (pluginOptions.autoImportPolyfill) {
       webpackConfig.plugins.push(
