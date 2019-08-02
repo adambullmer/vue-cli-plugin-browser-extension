@@ -36,30 +36,38 @@ module.exports = (api, options) => {
   const isProduction = api.service.mode === 'production'
   const keyFile = api.resolve('key.pem')
   const hasKeyFile = keyExists(keyFile)
+  const contentScriptEntries = Object.keys((componentOptions.contentScripts || {}).entries || {})
+
+  const entry = {}
+  const entries = {}
+  if (pluginOptions.components.background) {
+    entries.background = 'background'
+    entry.background = [api.resolve(componentOptions.background.entry)]
+  }
+  if (pluginOptions.components.contentScripts) {
+    entries.contentScript = contentScriptEntries
+    for (const name of contentScriptEntries) {
+      let paths = componentOptions.contentScripts.entries[name]
+      if (!Array.isArray(paths)) {
+        paths = [paths]
+      }
+
+      entry[name] = paths.map((path) => api.resolve(path))
+    }
+  }
+  const userScripts = Object.keys(entry)
 
   api.chainWebpack((webpackConfig) => {
     webpackConfig.entryPoints.delete('app')
-    const entry = {}
-    if (pluginOptions.components.background) {
-      entry['background'] = [api.resolve(componentOptions.background.entry)]
-    }
-    if (pluginOptions.components.contentScripts) {
-      const entries = componentOptions.contentScripts.entries
-      for (const name of Object.keys(entries)) {
-        let paths = entries[name]
-        if (!Array.isArray(paths)) {
-          paths = [paths]
-        }
-        entry[name] = paths.map((path) => api.resolve(path))
-      }
-    }
+    // Ignore rewriting names for background and content scripts
+    webpackConfig.output.filename((file) =>
+      userScripts.includes(file.chunk.name) || !isProduction ? 'js/[name].js' : 'js/[name].[contenthash:8].js'
+    )
     webpackConfig.merge({ entry })
     webpackConfig.optimization.delete('splitChunks')
   })
 
   api.configureWebpack((webpackConfig) => {
-    webpackConfig.output.filename = '[name].js'
-    webpackConfig.output.chunkFilename = 'js/[id].[name].js'
     webpackConfig.node.global = false
 
     if (webpackConfig.performance === undefined) {

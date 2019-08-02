@@ -19,17 +19,17 @@
   },
   "background": {
     "scripts": [
-      "background.js"
+      "js/background.js"
     ],
     "persistent": false
   <%_ } -%>
   },
   <%_ if (options.components.devtools) { -%>
-  "devtools_page": "devtools/devtools.html",
+  "devtools_page": "devtools.html",
   <%_ } -%>
   "browser_action": {
     <%_ if (options.components.popup) { -%>
-    "default_popup": "popup/popup.html",
+    "default_popup": "popup.html",
     <%_ } -%>
     "default_title": "__MSG_extName__",
     "default_icon": {
@@ -39,13 +39,13 @@
   <%_ if (options.components.options) { -%>
   },
   "options_ui": {
-    "page": "options/options.html",
+    "page": "options.html",
     "<%- options.api %>_style": true
   <%_ } -%>
   <%_ if (options.components.override) { -%>
   },
   "chrome_url_overrides": {
-    "<%- options.components.overrideOption || 'newtab' %>": "override/override.html"
+    "<%- options.components.overrideOption || 'newtab' %>": "override.html"
   <%_ } -%>
   }
 }

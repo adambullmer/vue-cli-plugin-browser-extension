@@ -66,7 +66,7 @@ module.exports = (api, _options) => {
   if (options.components.popup) {
     api.render('./template/popup', { name, ...options })
 
-    pkg.vue.pages['popup/popup'] = {
+    pkg.vue.pages['popup'] = {
       entry: 'src/popup/popup.js',
       template: 'src/popup/popup.html',
       title: 'Popup'
@@ -76,7 +76,7 @@ module.exports = (api, _options) => {
   if (options.components.options) {
     api.render('./template/options', { name, ...options })
 
-    pkg.vue.pages['options/options'] = {
+    pkg.vue.pages['options'] = {
       entry: 'src/options/options.js',
       template: 'src/options/options.html',
       title: 'Options'
@@ -86,7 +86,7 @@ module.exports = (api, _options) => {
   if (options.components.override) {
     api.render('./template/override', { name, ...options })
 
-    pkg.vue.pages['override/override'] = {
+    pkg.vue.pages['override'] = {
       entry: 'src/override/override.js',
       template: 'src/override/override.html',
       title: 'Override'
@@ -96,10 +96,10 @@ module.exports = (api, _options) => {
   if (options.components.standalone) {
     api.render('./template/standalone', { name, ...options })
 
-    pkg.vue.pages['standalone/standalone'] = {
+    pkg.vue.pages['standalone'] = {
       entry: 'src/standalone/standalone.js',
       template: 'src/standalone/standalone.html',
-      filename: 'app.html',
+      filename: 'index.html',
       title: name
     }
   }
@@ -107,7 +107,7 @@ module.exports = (api, _options) => {
   if (options.components.devtools) {
     api.render('./template/devtools', { name, ...options })
 
-    pkg.vue.pages['devtools/devtools'] = {
+    pkg.vue.pages['devtools'] = {
       entry: 'src/devtools/devtools.js',
       template: 'src/devtools/devtools.html',
       title: 'Devtools'
