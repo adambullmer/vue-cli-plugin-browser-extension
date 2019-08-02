@@ -65,6 +65,12 @@ module.exports = (api, options) => {
     )
     webpackConfig.merge({ entry })
     webpackConfig.optimization.delete('splitChunks')
+
+    // configure webpack-extension-reloader for automatic reloading of extension when content and background scripts change (not HMR)
+    // enabled only when webpack mode === 'development'
+    if (!isProduction) {
+      webpackConfig.plugin('extension-reloader').use(ExtensionReloader, [{ entries }])
+    }
   })
 
   api.configureWebpack((webpackConfig) => {
@@ -145,21 +151,6 @@ module.exports = (api, options) => {
           filename: `${packageJson.name}-v${packageJson.version}-${api.service.mode}.zip`
         })
       )
-    }
-
-    // configure webpack-extension-reloader for automatic reloading of extension when content and background scripts change (not HMR)
-    // enabled only when webpack mode === 'development'
-    const entries = {}
-
-    if (pluginOptions.components.background) {
-      entries.background = 'background'
-    }
-
-    if (pluginOptions.components.contentScripts) {
-      entries.contentScript = Object.keys(componentOptions.contentScripts.entries)
-    }
-    if (!isProduction) {
-      webpackConfig.plugins.push(new ExtensionReloader({ entries }))
     }
   })
 }
