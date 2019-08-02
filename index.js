@@ -65,6 +65,15 @@ module.exports = (api, options) => {
     )
     webpackConfig.merge({ entry })
 
+    if (pluginOptions.modesToZip.includes(api.service.mode)) {
+      webpackConfig.plugin('zip-browser-extension').use(ZipPlugin, [
+        {
+          path: api.resolve(pluginOptions.artifactsDir || 'artifacts'),
+          filename: `${packageJson.name}-v${packageJson.version}-${api.service.mode}.zip`
+        }
+      ])
+    }
+
     // configure webpack-extension-reloader for automatic reloading of extension when content and background scripts change (not HMR)
     // enabled only when webpack mode === 'development'
     if (!isProduction) {
@@ -148,14 +157,5 @@ module.exports = (api, options) => {
         }
       ])
     )
-
-    if (pluginOptions.modesToZip.includes(api.service.mode)) {
-      webpackConfig.plugins.push(
-        new ZipPlugin({
-          path: api.resolve(`${options.outputDir || 'dist'}-zip`),
-          filename: `${packageJson.name}-v${packageJson.version}-${api.service.mode}.zip`
-        })
-      )
-    }
   })
 }

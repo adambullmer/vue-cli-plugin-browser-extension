@@ -6,7 +6,7 @@ const gitignoreSnippet = `
 *.pem
 *.pub
 *.zip
-/dist-zip
+/artifacts
 `
 
 module.exports = (api, _options) => {

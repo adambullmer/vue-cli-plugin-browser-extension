@@ -200,6 +200,13 @@ module.exports = {
 
   Whether to auto import `webextension-polyfill` using Webpack's [ProvidePlugin](https://webpack.js.org/plugins/provide-plugin/).
 
+- **artifactsDir**
+
+  - Type: `string`
+  - Default: `'./artifacts'`
+
+  Directory where the zipped browser extension should get created.
+
 ### Component options
 
 Some browser extension components have additional options which can be set as follows:
