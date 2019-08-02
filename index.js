@@ -64,7 +64,6 @@ module.exports = (api, options) => {
       userScripts.includes(file.chunk.name) || !isProduction ? 'js/[name].js' : 'js/[name].[contenthash:8].js'
     )
     webpackConfig.merge({ entry })
-    webpackConfig.optimization.delete('splitChunks')
 
     // configure webpack-extension-reloader for automatic reloading of extension when content and background scripts change (not HMR)
     // enabled only when webpack mode === 'development'
@@ -74,6 +73,12 @@ module.exports = (api, options) => {
   })
 
   api.configureWebpack((webpackConfig) => {
+    const omitUserScripts = ({ name }) => !userScripts.includes(name)
+    if (isProduction) {
+      webpackConfig.optimization.splitChunks.cacheGroups.vendors.chunks = omitUserScripts
+      webpackConfig.optimization.splitChunks.cacheGroups.common.chunks = omitUserScripts
+    }
+
     webpackConfig.node.global = false
 
     if (webpackConfig.performance === undefined) {
