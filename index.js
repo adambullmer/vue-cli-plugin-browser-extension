@@ -65,6 +65,22 @@ module.exports = (api, options) => {
     )
     webpackConfig.merge({ entry })
 
+    if (pluginOptions.autoImportPolyfill) {
+      webpackConfig.plugin('provide-webextension-polyfill').use(webpack.ProvidePlugin, [
+        {
+          browser: 'webextension-polyfill'
+        }
+      ])
+
+      // Workaround for https://github.com/mozilla/webextension-polyfill/issues/68
+      webpackConfig.module
+        .rule('provide-webextension-polyfill')
+        .test(require.resolve('webextension-polyfill', { paths: [appRootPath] }))
+        .use('imports')
+        .loader('imports-loader')
+        .options({ browser: '>undefined' })
+    }
+
     if (isProduction) {
       // Silence warnings of known large files, like images, sourcemaps, and the zip artifact
       webpackConfig.performance.assetFilter((assetFilename) =>
@@ -102,20 +118,6 @@ module.exports = (api, options) => {
     }
 
     webpackConfig.node.global = false
-
-    if (pluginOptions.autoImportPolyfill) {
-      webpackConfig.plugins.push(
-        new webpack.ProvidePlugin({
-          browser: 'webextension-polyfill'
-        })
-      )
-
-      // Workaround for https://github.com/mozilla/webextension-polyfill/issues/68
-      webpackConfig.module.rules.push({
-        test: require.resolve('webextension-polyfill', { paths: [appRootPath] }),
-        use: 'imports-loader?browser=>undefined'
-      })
-    }
 
     webpackConfig.plugins.push(
       new CopyWebpackPlugin([
