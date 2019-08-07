@@ -59,7 +59,7 @@ module.exports = (api, _options) => {
 
     pkg.vue.pages['popup'] = {
       entry: 'src/popup/popup.js',
-      template: 'src/popup/popup.html',
+      template: 'public/browser-extension.html',
       title: 'Popup'
     }
   }
@@ -69,7 +69,7 @@ module.exports = (api, _options) => {
 
     pkg.vue.pages['options'] = {
       entry: 'src/options/options.js',
-      template: 'src/options/options.html',
+      template: 'public/browser-extension.html',
       title: 'Options'
     }
   }
@@ -79,7 +79,7 @@ module.exports = (api, _options) => {
 
     pkg.vue.pages['override'] = {
       entry: 'src/override/override.js',
-      template: 'src/override/override.html',
+      template: 'public/browser-extension.html',
       title: 'Override'
     }
   }
@@ -89,7 +89,7 @@ module.exports = (api, _options) => {
 
     pkg.vue.pages['standalone'] = {
       entry: 'src/standalone/standalone.js',
-      template: 'src/standalone/standalone.html',
+      template: 'public/browser-extension.html',
       filename: 'index.html',
       title: name
     }
@@ -100,7 +100,7 @@ module.exports = (api, _options) => {
 
     pkg.vue.pages['devtools'] = {
       entry: 'src/devtools/devtools.js',
-      template: 'src/devtools/devtools.html',
+      template: 'public/browser-extension.html',
       title: 'Devtools'
     }
   }

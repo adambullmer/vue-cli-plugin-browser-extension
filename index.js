@@ -149,6 +149,11 @@ module.exports = (api, options) => {
     if (!isProduction) {
       webpackConfig.plugin('extension-reloader').use(ExtensionReloader, [{ entries }])
     }
+
+    webpackConfig.plugin('copy').tap((args) => {
+      args[0][0].ignore.push('browser-extension.html')
+      return args
+    })
   })
 
   api.configureWebpack((webpackConfig) => {
