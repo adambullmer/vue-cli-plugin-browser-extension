@@ -4,21 +4,22 @@
   </div>
 </template>
 
-<script>
+<script lang="ts">
+import Vue from 'vue'
 <%_ if (options.usePolyfill && !options.autoImportPolyfill) { -%>
 import browser from 'webextension-polyfill'
 <%_ } -%>
-export default {
+export default Vue.extend({
   name: 'HelloWorld',
   mounted () {
     <%- options.api %>.runtime.sendMessage({})
   },
   computed: {
-    defaultText() {
-      return <%- options.api %>.i18n.getMessage('extName');
+    defaultText () {
+      return <%- options.api %>.i18n.getMessage('extName')
     }
   }
-}
+})
 </script>
 
 <style scoped>
