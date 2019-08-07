@@ -1,14 +1,10 @@
 import Vue from 'vue'
-import App from './App'
-import store from '../store'
-import router from './router'
+import App from './App.vue'
 
-<%- options.api %>.devtools.panels.create(<%- options.api %>.i18n.getMessage('extName'), '/assets/logo.png', 'devtools/devtools.html');
+<%- options.api %>.devtools.panels.create(<%- options.api %>.i18n.getMessage('extName'), '/assets/logo.png', 'devtools.html');
 
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
-  store,
-  router,
   render: h => h(App)
 })

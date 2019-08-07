@@ -1,16 +1,15 @@
 <template>
-  <h1>{{ defaultText }}</h1>
+  <div>
+    <p>{{ defaultText }}</p>
+  </div>
 </template>
 
 <script>
 <%_ if (options.usePolyfill && !options.autoImportPolyfill) { -%>
 import browser from 'webextension-polyfill'
 <%_ } -%>
-
 export default {
-  data () {
-    return {}
-  },
+  name: 'HelloWorld',
   mounted () {
     <%- options.api %>.runtime.sendMessage({})
   },
@@ -21,3 +20,9 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+p {
+  font-size: 20px;
+}
+</style>

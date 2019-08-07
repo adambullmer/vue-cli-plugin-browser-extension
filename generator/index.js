@@ -33,10 +33,8 @@ module.exports = (api, _options) => {
     scripts: {
       serve: 'vue-cli-service build --mode development --watch'
     },
-    dependencies: {
-      'vue-router': '^3.0.1',
-      vuex: '^3.0.1'
-    },
+    dependencies: {},
+    devDependencies: {},
     vue: {
       pages: {},
       pluginOptions: {
@@ -47,9 +45,7 @@ module.exports = (api, _options) => {
 
   if (options.usePolyfill) {
     pkg.dependencies['webextension-polyfill'] = '^0.4.0'
-    pkg.devDependencies = {
-      'imports-loader': '^0.8.0'
-    }
+    pkg.devDependencies['imports-loader'] = '^0.8.0'
   }
 
   if (api.hasPlugin('eslint')) {

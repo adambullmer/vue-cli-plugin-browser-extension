@@ -1,22 +1,12 @@
 <template>
-  <div>
-    <p>{{ defaultText }}</p>
-  </div>
+  <hello-world />
 </template>
 
 <script>
+import HelloWorld from '@/components/HelloWorld.vue'
+
 export default {
   name: 'App',
-  computed: {
-    defaultText() {
-      return <%- options.api %>.i18n.getMessage('extName');
-    }
-  }
+  components: { HelloWorld }
 }
 </script>
-
-<style scoped>
-p {
-  font-size: 20px;
-}
-</style>
