@@ -1,4 +1,3 @@
-import store from './store'
 <%_ if (options.usePolyfill && !options.autoImportPolyfill) { -%>
 import browser from 'webextension-polyfill'
 <%_ } -%>
