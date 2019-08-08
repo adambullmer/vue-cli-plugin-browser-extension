@@ -179,27 +179,6 @@ module.exports = {
 
   Array containing names of mode in which zipping up will trigger after build.
 
-- **api**
-
-  - Type: `'chrome'|'browser'`
-  - Default: `'browser'`
-
-  Browser extension API to use.
-
-- **usePolyfill**
-
-  - Type: `boolean`
-  - Default: `true`
-
-  Whether to add [webextension-polyfill](https://github.com/mozilla/webextension-polyfill) to polyfill WebExtension APIs in chrome.
-
-- **autoImportPolyfill**
-
-  - Type: `boolean`
-  - Default: `true`
-
-  Whether to auto import `webextension-polyfill` using Webpack's [ProvidePlugin](https://webpack.js.org/plugins/provide-plugin/).
-
 - **artifactsDir**
 
   - Type: `string`
@@ -269,6 +248,26 @@ Provided for you is the `default_locale` option in the manifest, and a `_locales
 There is some basic usage of it in the manifest, as well as in some of the boilerplate files.
 Since this is largely an out of the box solution provided by the browsers, it is heavily encouraged to utilize it.
 If you do not want to translate your app, simply delete the `public/_locales` directory, and no longer use the `browser.i18n` methods.
+
+## Browser Polyfills
+
+This plugin by default adds in the official [mozilla webextension polyfill](https://github.com/mozilla/webextension-polyfill) to the build.
+The opinion of this plugin is that developers should be building cross platform, and should have reasonable tooling to do so.
+By emphasizing cross platform first, your application will be adhering to the community standards, be ready for distribution to other extension stores, and avoid developing against browser APIs that may have no equivalent.
+The polyfill is a no-op on firefox, and only takes up 20.5kb unminified.
+
+If you still feel strongly to not include the polyfill, then this is what you need to add to your webpack chain to do so.
+
+`vue.config.js`
+
+```js
+module.exports = {
+  chainWebpack(config) {
+    config.plugins.delete('provide-webextension-polyfill');
+    config.module.rules.delete('provide-webextension-polyfill');
+  },
+};
+```
 
 ## Testing
 

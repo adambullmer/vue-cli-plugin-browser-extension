@@ -54,36 +54,6 @@ module.exports = [
     }
   },
   {
-    name: 'api',
-    type: 'list',
-    default: 'browser',
-    message: 'Which extension API do you wish to use?',
-    choices: [
-      {
-        name: 'browser (WebExtension)',
-        value: 'browser'
-      },
-      {
-        name: 'chrome',
-        value: 'chrome'
-      }
-    ]
-  },
-  {
-    name: 'usePolyfill',
-    type: 'confirm',
-    message: 'Add WebExtension polyfill?',
-    default: true,
-    when: (answers) => answers.api === 'browser'
-  },
-  {
-    name: 'autoImportPolyfill',
-    type: 'confirm',
-    message: 'Make polyfill available without import?',
-    default: true,
-    when: (answers) => answers.usePolyfill
-  },
-  {
     name: 'generateSigningKey',
     type: 'confirm',
     message: 'Generate a new signing key (danger)?',

@@ -40,7 +40,7 @@
   },
   "options_ui": {
     "page": "options.html",
-    "<%- options.api %>_style": true
+    "browser_style": true
   <%_ } -%>
   <%_ if (options.components.override) { -%>
   },
