@@ -1,13 +1,11 @@
 const fs = require('fs')
 const path = require('path')
 const { generateKey } = require('../lib/signing-key')
-const gitignoreSnippet = `
-# Vue Browser Extension Output
-*.pem
-*.pub
-*.zip
-/artifacts
-`
+const gitignoreRules = ['# Vue Browser Extension Output', '*.pem', '*.pub', '*.zip', '/artifacts']
+
+function regexEscape (rule) {
+  return rule.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+}
 
 module.exports = (api, _options) => {
   const options = Object.assign({}, _options)
@@ -174,7 +172,13 @@ module.exports = (api, _options) => {
   api.onCreateComplete(() => {
     const gitignoreFile = api.resolve('./.gitignore')
     const gitignore = fs.readFileSync(gitignoreFile, 'utf8')
-    fs.writeFileSync(gitignoreFile, gitignore + gitignoreSnippet)
+
+    const gitignoreSnippet = gitignoreRules
+      .filter((rule) => !new RegExp(`^${regexEscape(rule)}$`, 'gm').test(gitignore))
+      .join('\n')
+    if (gitignoreSnippet !== '' && gitignoreSnippet !== gitignoreRules[0]) {
+      fs.writeFileSync(gitignoreFile, gitignore + '\n' + gitignoreSnippet + '\n')
+    }
 
     if (hasTs) {
       const tsconfigFile = api.resolve('./tsconfig.json')
