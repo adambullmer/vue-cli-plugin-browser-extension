@@ -9,8 +9,7 @@ This is intended to be a vue-cli@3.x replacement for [https://github.com/Kocal/v
 This plugin changes the `serve` command for your vue applications.
 This new command is only for running a livereload server while testing out your browser extension.
 
-This removes the entrypoint of `main.js`, and as such will not scaffold a general vue app.
-That behavior might change when support for a standalone tab application exists, but for now it is gone.
+This removes the entrypoint of `src/main.js`, and as such will not scaffold a general vue app.
 
 Packaging and deploying will still be done with `yarn build` and zipping in up for Chrome, Firefox, or whichever other browser you wish to develop for.
 
@@ -19,61 +18,36 @@ I hope to be able to scaffold an app so that identifying the below in unnecessar
 
 ```
 |- public/
+  |- _locales/
+    |- en/
+      |- messages.json
   |- icons/
     |- Icons for your extension. Should include a 16, 19, 38, 48, and 128px square image
+  |- browser-extension.html (default target html template)
 |- src/
-   |- assets/
-      |- Static assets in use in your app, like logo.png
-   |- content_scripts
-      |- content-script.js
-   |- devtools/ (asked during project generation)
-      |- router/
-         |- pages/
-            |- Index.vue
-         |- index.js
-         |- routes.js
-      |- App.vue
-      |- devtools.html
-      |- devtools.js
-   |- options/ (asked during project generation)
-      |- App.vue
-      |- options.html
-      |- options.js
-   |- popup/ (asked during project generation)
-      |- router/
-         |- pages/
-            |- Index.vue
-         |- index.js
-         |- routes.js
-      |- App.vue
-      |- popup.html
-      |- popup.js
-   |- override/ (asked during project generation)
-      |- router/
-         |- pages/
-            |- Index.vue
-         |- index.js
-         |- routes.js
-      |- App.vue
-      |- override.html
-      |- override.js
-   |- standalone/ (asked during project generation)
-      |- router/
-         |- pages/
-            |- Index.vue
-         |- index.js
-         |- routes.js
-      |- App.vue
-      |- standalone.html
-      |- standalone.js
-   |- store/
-      |- actions.js
-      |- getters.js
-      |- index.js
-      |- mutation-types.js
-      |- mutations.js
-   |- background.js
-   |- manifest.json
+  |- assets/
+    |- Static assets in use in your app, like logo.png
+  |- components/
+    |- HelloWorld.vue (modified)
+  |- content-scripts
+    |- content-script.js
+  |- devtools/ (asked during project generation)
+    |- App.vue
+    |- main.js
+  |- options/ (asked during project generation)
+    |- App.vue
+    |- main.js
+  |- popup/ (asked during project generation)
+    |- App.vue
+    |- main.js
+  |- override/ (asked during project generation)
+    |- App.vue
+    |- main.js
+  |- standalone/ (asked during project generation)
+    |- App.vue
+    |- main.js
+  |- background.js
+  |- manifest.json
 ```
 
 ## System Dependencies
