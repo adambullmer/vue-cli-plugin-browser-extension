@@ -67,7 +67,7 @@ module.exports = (api, _options) => {
   if (options.components.background) {
     api.render(
       {
-        [`./src/background.${fileExt}`]: `./template/background/src/background.${fileExt}`
+        [`./src/background.${fileExt}`]: `./template/background/src/background.js`
       },
       { name, ...options }
     )
@@ -76,7 +76,7 @@ module.exports = (api, _options) => {
   if (options.components.contentScripts) {
     api.render(
       {
-        [`./src/content-scripts/content-script.${fileExt}`]: `./template/content-scripts/src/content-scripts/content-script.${fileExt}`
+        [`./src/content-scripts/content-script.${fileExt}`]: `./template/content-scripts/src/content-scripts/content-script.js`
       },
       { name, ...options }
     )
@@ -86,7 +86,7 @@ module.exports = (api, _options) => {
     api.render(
       {
         './src/popup/App.vue': `./template/popup/src/popup/App.${fileExt}.vue`,
-        [`./src/popup/main.${fileExt}`]: `./template/popup/src/popup/main.${fileExt}`
+        [`./src/popup/main.${fileExt}`]: `./template/popup/src/popup/main.js`
       },
       { name, ...options }
     )
@@ -102,7 +102,7 @@ module.exports = (api, _options) => {
     api.render(
       {
         './src/options/App.vue': `./template/options/src/options/App.${fileExt}.vue`,
-        [`./src/options/main.${fileExt}`]: `./template/options/src/options/main.${fileExt}`
+        [`./src/options/main.${fileExt}`]: `./template/options/src/options/main.js`
       },
       { name, ...options }
     )
@@ -118,7 +118,7 @@ module.exports = (api, _options) => {
     api.render(
       {
         './src/override/App.vue': `./template/override/src/override/App.${fileExt}.vue`,
-        [`./src/override/main.${fileExt}`]: `./template/override/src/override/main.${fileExt}`
+        [`./src/override/main.${fileExt}`]: `./template/override/src/override/main.js`
       },
       { name, ...options }
     )
@@ -134,7 +134,7 @@ module.exports = (api, _options) => {
     api.render(
       {
         './src/standalone/App.vue': `./template/standalone/src/standalone/App.${fileExt}.vue`,
-        [`./src/standalone/main.${fileExt}`]: `./template/standalone/src/standalone/main.${fileExt}`
+        [`./src/standalone/main.${fileExt}`]: `./template/standalone/src/standalone/main.js`
       },
       { name, ...options }
     )
@@ -151,7 +151,7 @@ module.exports = (api, _options) => {
     api.render(
       {
         './src/devtools/App.vue': `./template/devtools/src/devtools/App.${fileExt}.vue`,
-        [`./src/devtools/main.${fileExt}`]: `./template/devtools/src/devtools/main.${fileExt}`
+        [`./src/devtools/main.${fileExt}`]: `./template/devtools/src/devtools/main.js`
       },
       { name, ...options }
     )
