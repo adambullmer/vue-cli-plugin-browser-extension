@@ -1,75 +1,69 @@
-const fs = require('fs')
 const path = require('path')
 const { generateKey } = require('../lib/signing-key')
-const gitignoreRules = ['# Vue Browser Extension Output', '*.pem', '*.pub', '*.zip', '/artifacts']
-
-function regexEscape (rule) {
-  return rule.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
-}
+const { renderDomain, renderGitignore, renderTs } = require('../lib/render')
 
 module.exports = (api, _options) => {
-  const options = Object.assign({}, _options)
-  const hasRouter = api.hasPlugin('router')
-  const hasVuex = api.hasPlugin('vuex')
+  const browserExtension = Object.assign({}, _options)
+  delete browserExtension.registry
+  delete browserExtension.components
+  // const hasRouter = api.hasPlugin('router')
+  // const hasVuex = api.hasPlugin('vuex')
   const hasTs = api.hasPlugin('typescript')
   const hasLint = api.hasPlugin('eslint')
   const fileExt = hasTs ? 'ts' : 'js'
 
-  options.hasRouter = hasRouter
-  options.hasVuex = hasVuex
-  options.hasTs = hasTs
-  options.hasLint = hasLint
-  options.fileExt = fileExt
-  options.componentOptions = {}
-  if (options.components.background) {
-    options.componentOptions.background = {
+  browserExtension.componentOptions = {}
+  if (browserExtension.components.background) {
+    browserExtension.componentOptions.background = {
       entry: `src/background.${fileExt}`
     }
   }
-  if (options.components.contentScripts) {
-    options.componentOptions.contentScripts = {
+  if (browserExtension.components.contentScripts) {
+    browserExtension.componentOptions.contentScripts = {
       entries: {
         'content-script': [`src/content-scripts/content-script.${fileExt}`]
       }
     }
   }
 
-  const appRootPath = process.cwd()
-  const { name, description } = require(path.join(appRootPath, 'package.json'))
-  const eslintConfig = { env: { webextensions: true } }
   const pkg = {
     private: true,
     scripts: {
       serve: 'vue-cli-service build --mode development --watch'
     },
-    dependencies: {},
     devDependencies: {},
     vue: {
       pages: {},
-      pluginOptions: {
-        browserExtension: options
-      }
+      pluginOptions: { browserExtension }
     }
   }
-
-  if (api.hasPlugin('eslint')) {
-    pkg.eslintConfig = eslintConfig
+  if (hasLint) {
+    pkg.eslintConfig = { env: { webextensions: true } }
   }
-
   if (hasTs) {
     pkg.devDependencies['@types/firefox-webext-browser'] = '^67.0.2'
   }
-
   api.extendPackage(pkg)
-  api.render('./template/base-app', { name, description, ...options })
-  api.render({ './src/components/HelloWorld.vue': `./template/HelloWorld.${fileExt}.vue` }, { name, ...options })
+
+  const { name, description } = require(api.resolve('package.json'))
+  const options = Object.assign({}, browserExtension)
+  options.name = name
+  options.description = description
+  // options.hasRouter = hasRouter
+  // options.hasVuex = hasVuex
+  options.hasTs = hasTs
+  options.hasLint = hasLint
+  options.fileExt = fileExt
+
+  api.render('./template/base-app', options)
+  api.render({ './src/components/HelloWorld.vue': `./template/HelloWorld.${fileExt}.vue` }, options)
 
   if (options.components.background) {
     api.render(
       {
         [`./src/background.${fileExt}`]: `./template/background/src/background.js`
       },
-      { name, ...options }
+      options
     )
   }
 
@@ -78,89 +72,28 @@ module.exports = (api, _options) => {
       {
         [`./src/content-scripts/content-script.${fileExt}`]: `./template/content-scripts/src/content-scripts/content-script.js`
       },
-      { name, ...options }
+      options
     )
   }
 
   if (options.components.popup) {
-    api.render(
-      {
-        './src/popup/App.vue': `./template/popup/src/popup/App.${fileExt}.vue`,
-        [`./src/popup/main.${fileExt}`]: `./template/popup/src/popup/main.js`
-      },
-      { name, ...options }
-    )
-
-    pkg.vue.pages['popup'] = {
-      entry: `src/popup/main.${fileExt}`,
-      template: 'public/browser-extension.html',
-      title: 'Popup'
-    }
+    renderDomain({ title: 'Popup', ext: fileExt, options, api })
   }
 
   if (options.components.options) {
-    api.render(
-      {
-        './src/options/App.vue': `./template/options/src/options/App.${fileExt}.vue`,
-        [`./src/options/main.${fileExt}`]: `./template/options/src/options/main.js`
-      },
-      { name, ...options }
-    )
-
-    pkg.vue.pages['options'] = {
-      entry: `src/options/main.${fileExt}`,
-      template: 'public/browser-extension.html',
-      title: 'Options'
-    }
+    renderDomain({ title: 'Options', ext: fileExt, options, api })
   }
 
   if (options.components.override) {
-    api.render(
-      {
-        './src/override/App.vue': `./template/override/src/override/App.${fileExt}.vue`,
-        [`./src/override/main.${fileExt}`]: `./template/override/src/override/main.js`
-      },
-      { name, ...options }
-    )
-
-    pkg.vue.pages['override'] = {
-      entry: `src/override/main.${fileExt}`,
-      template: 'public/browser-extension.html',
-      title: 'Override'
-    }
+    renderDomain({ title: 'Override', ext: fileExt, options, api })
   }
 
   if (options.components.standalone) {
-    api.render(
-      {
-        './src/standalone/App.vue': `./template/standalone/src/standalone/App.${fileExt}.vue`,
-        [`./src/standalone/main.${fileExt}`]: `./template/standalone/src/standalone/main.js`
-      },
-      { name, ...options }
-    )
-
-    pkg.vue.pages['standalone'] = {
-      entry: `src/standalone/main.${fileExt}`,
-      template: 'public/browser-extension.html',
-      filename: 'index.html',
-      title: name
-    }
+    renderDomain({ title: 'Standalone', filename: 'index.html', ext: fileExt, options, api })
   }
 
   if (options.components.devtools) {
-    api.render(
-      {
-        './src/devtools/App.vue': `./template/devtools/src/devtools/App.${fileExt}.vue`,
-        [`./src/devtools/main.${fileExt}`]: `./template/devtools/src/devtools/main.js`
-      },
-      { name, ...options }
-    )
-
-    pkg.vue.pages['devtools'] = {
-      entry: `src/devtools/main.${fileExt}`,
-      template: 'public/browser-extension.html',
-      title: 'Devtools'
-    }
+    renderDomain({ title: 'Devtools', ext: fileExt, options, api })
   }
 
   if (options.generateSigningKey === true) {
@@ -170,25 +103,10 @@ module.exports = (api, _options) => {
   }
 
   api.onCreateComplete(() => {
-    const gitignoreFile = api.resolve('./.gitignore')
-    const gitignore = fs.readFileSync(gitignoreFile, 'utf8')
-
-    const gitignoreSnippet = gitignoreRules
-      .filter((rule) => !new RegExp(`^${regexEscape(rule)}$`, 'gm').test(gitignore))
-      .join('\n')
-    if (gitignoreSnippet !== '' && gitignoreSnippet !== gitignoreRules[0]) {
-      fs.writeFileSync(gitignoreFile, gitignore + '\n' + gitignoreSnippet + '\n')
-    }
+    renderGitignore(api)
 
     if (hasTs) {
-      const tsconfigFile = api.resolve('./tsconfig.json')
-      const tsconfig = require(tsconfigFile)
-
-      if (!tsconfig.compilerOptions.types.includes('firefox-webext-browser')) {
-        tsconfig.compilerOptions.types.push('firefox-webext-browser')
-      }
-
-      fs.writeFileSync(tsconfigFile, JSON.stringify(tsconfig, null, 2))
+      renderTs(api)
     }
   })
 }

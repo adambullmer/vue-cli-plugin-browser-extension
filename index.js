@@ -32,7 +32,7 @@ module.exports = (api, options) => {
     ? Object.assign(defaultOptions, options.pluginOptions.browserExtension)
     : defaultOptions
   const componentOptions = pluginOptions.componentOptions
-  const packageJson = require(path.join(appRootPath, 'package.json'))
+  const packageJson = api.resolve('package.json')
   const isProduction = api.service.mode === 'production'
   const keyFile = api.resolve('key.pem')
   const hasKeyFile = keyExists(keyFile)
@@ -40,11 +40,11 @@ module.exports = (api, options) => {
 
   const entry = {}
   const entries = {}
-  if (pluginOptions.components.background) {
+  if (componentOptions.background) {
     entries.background = 'background'
     entry.background = [api.resolve(componentOptions.background.entry)]
   }
-  if (pluginOptions.components.contentScripts) {
+  if (componentOptions.contentScripts) {
     entries.contentScript = contentScriptEntries
     for (const name of contentScriptEntries) {
       let paths = componentOptions.contentScripts.entries[name]
