@@ -3,7 +3,8 @@ const webpack = require('webpack')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const ExtensionReloader = require('webpack-extension-reloader')
 const ZipPlugin = require('zip-webpack-plugin')
-const { keyExists, hashKey } = require('./lib/signing-key')
+const { keyExists } = require('./lib/signing-key')
+const manifestTransformer = require('./lib/manifest')
 const defaultOptions = {
   components: {},
   componentOptions: {},
@@ -16,14 +17,6 @@ const performanceAssetFilterList = [
   (file) => !file.endsWith('.zip'),
   (file) => !/^icons\//.test(file)
 ]
-
-function getManifestJsonString (pluginOptions, jsonContent) {
-  if (pluginOptions.manifestTransformer) {
-    const jsonContentCopy = Object.assign({}, jsonContent)
-    jsonContent = pluginOptions.manifestTransformer(jsonContentCopy)
-  }
-  return JSON.stringify(jsonContent, null, 2)
-}
 
 module.exports = (api, options) => {
   const appRootPath = api.getCwd()
@@ -68,41 +61,7 @@ module.exports = (api, options) => {
         {
           from: './src/manifest.json',
           to: 'manifest.json',
-          transform: async (content) => {
-            const jsonContent = JSON.parse(content)
-            if (pluginOptions.manifestSync.includes('version')) {
-              jsonContent.version = packageJson.version
-            }
-            if (pluginOptions.manifestSync.includes('description')) {
-              jsonContent.description = packageJson.description
-            }
-
-            jsonContent.content_security_policy =
-              jsonContent.content_security_policy || "script-src 'self' 'unsafe-eval'; object-src 'self'"
-
-            // If building for production (going to web store) abort early.
-            // The browser extension store will hash your signing key and apply CSP policies.
-            if (isProduction) {
-              jsonContent.content_security_policy = jsonContent.content_security_policy.replace(/'unsafe-eval'/, '')
-
-              return getManifestJsonString(pluginOptions, jsonContent)
-            }
-
-            if (hasKeyFile) {
-              try {
-                jsonContent.key = await hashKey(keyFile)
-              } catch (error) {
-                logger.error('Unexpected error hashing keyfile:', error)
-              }
-            }
-            if (!jsonContent.key) {
-              logger.warn(
-                'No key.pem file found. This is fine for dev, however you may have problems publishing without one'
-              )
-            }
-
-            return getManifestJsonString(pluginOptions, jsonContent)
-          }
+          transform: manifestTransformer(api, pluginOptions, packageJson)
         }
       ]
     ])
