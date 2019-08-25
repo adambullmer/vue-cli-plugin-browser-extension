@@ -2,14 +2,16 @@
   <hello-world />
 </template>
 
-<script>
+<script lang="ts">
+import Vue from 'vue'
 import HelloWorld from '@/components/HelloWorld.vue'
 
-export default {
+export default Vue.extend({
   name: 'App',
   components: { HelloWorld }
-}
+})
 </script>
+<%_ if (hasMinimumSize === true) { -%>
 
 <style>
 html {
@@ -17,3 +19,4 @@ html {
   height: 400px;
 }
 </style>
+<%_ } -%>

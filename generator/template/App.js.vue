@@ -10,6 +10,7 @@ export default {
   components: { HelloWorld }
 }
 </script>
+<%_ if (hasMinimumSize === true) { -%>
 
 <style>
 html {
@@ -17,3 +18,4 @@ html {
   height: 400px;
 }
 </style>
+<%_ } -%>

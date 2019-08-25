@@ -5,8 +5,10 @@ module.exports = (api, _options) => {
   const browserExtension = Object.assign({}, _options)
   delete browserExtension.registry
   delete browserExtension.components
-  // const hasRouter = api.hasPlugin('router')
-  // const hasVuex = api.hasPlugin('vuex')
+  delete browserExtension.generateSigningKey
+
+  const hasRouter = api.hasPlugin('router')
+  const hasVuex = api.hasPlugin('vuex')
   const hasTs = api.hasPlugin('typescript')
   const hasLint = api.hasPlugin('eslint')
   const fileExt = hasTs ? 'ts' : 'js'
@@ -48,51 +50,44 @@ module.exports = (api, _options) => {
   const options = Object.assign({}, _options)
   options.name = name
   options.description = description
-  // options.hasRouter = hasRouter
-  // options.hasVuex = hasVuex
+  options.hasRouter = hasRouter
+  options.hasVuex = hasVuex
   options.hasTs = hasTs
   options.hasLint = hasLint
   options.fileExt = fileExt
 
   api.render('./template/base-app', options)
-  api.render({ './src/components/HelloWorld.vue': `./template/HelloWorld.${fileExt}.vue` }, options)
+  const additionalFiles = { './src/components/HelloWorld.vue': `./template/HelloWorld.${fileExt}.vue` }
 
   if (options.components.background) {
-    api.render(
-      {
-        [`./src/background.${fileExt}`]: `./template/background/src/background.js`
-      },
-      options
-    )
+    additionalFiles[`./src/background.${fileExt}`] = './template/background/src/background.js'
   }
 
   if (options.components.contentScripts) {
-    api.render(
-      {
-        [`./src/content-scripts/content-script.${fileExt}`]: `./template/content-scripts/src/content-scripts/content-script.js`
-      },
-      options
-    )
+    additionalFiles[`./src/content-scripts/content-script.${fileExt}`] =
+      './template/content-scripts/src/content-scripts/content-script.js'
   }
 
+  api.render(additionalFiles, options)
+
   if (options.components.popup) {
-    renderDomain({ title: 'Popup', ext: fileExt, options, api })
+    renderDomain({ title: 'Popup', fileExt, options, api, hasMinimumSize: true })
   }
 
   if (options.components.options) {
-    renderDomain({ title: 'Options', ext: fileExt, options, api })
+    renderDomain({ title: 'Options', fileExt, options, api, hasMinimumSize: true })
   }
 
   if (options.components.override) {
-    renderDomain({ title: 'Override', ext: fileExt, options, api })
+    renderDomain({ title: 'Override', fileExt, options, api })
   }
 
   if (options.components.standalone) {
-    renderDomain({ title: 'Standalone', filename: 'index.html', ext: fileExt, options, api })
+    renderDomain({ title: 'Standalone', filename: 'index.html', fileExt, options, api })
   }
 
   if (options.components.devtools) {
-    renderDomain({ title: 'Devtools', ext: fileExt, options, api })
+    renderDomain({ title: 'Devtools', fileExt, options, api })
   }
 
   if (options.generateSigningKey === true) {
