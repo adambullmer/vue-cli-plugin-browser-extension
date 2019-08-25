@@ -1,4 +1,3 @@
-const path = require('path')
 const { generateKey } = require('../lib/signing-key')
 const { renderDomain, renderGitignore, renderTs } = require('../lib/render')
 
@@ -13,12 +12,12 @@ module.exports = (api, _options) => {
   const fileExt = hasTs ? 'ts' : 'js'
 
   browserExtension.componentOptions = {}
-  if (browserExtension.components.background) {
+  if (_options.components.background) {
     browserExtension.componentOptions.background = {
       entry: `src/background.${fileExt}`
     }
   }
-  if (browserExtension.components.contentScripts) {
+  if (_options.components.contentScripts) {
     browserExtension.componentOptions.contentScripts = {
       entries: {
         'content-script': [`src/content-scripts/content-script.${fileExt}`]
@@ -46,7 +45,7 @@ module.exports = (api, _options) => {
   api.extendPackage(pkg)
 
   const { name, description } = require(api.resolve('package.json'))
-  const options = Object.assign({}, browserExtension)
+  const options = Object.assign({}, _options)
   options.name = name
   options.description = description
   // options.hasRouter = hasRouter
