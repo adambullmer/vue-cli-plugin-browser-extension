@@ -31,7 +31,7 @@ module.exports = (api, options) => {
     ? Object.assign(defaultOptions, options.pluginOptions.browserExtension)
     : defaultOptions
   const componentOptions = pluginOptions.componentOptions
-  const packageJson = api.resolve('package.json')
+  const packageJson = require(api.resolve('package.json'))
   const isProduction = api.service.mode === 'production'
   const keyFile = api.resolve('key.pem')
   const hasKeyFile = keyExists(keyFile)
