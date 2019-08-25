@@ -78,14 +78,16 @@ module.exports = (api, options) => {
               jsonContent.description = packageJson.description
             }
 
+            jsonContent.content_security_policy =
+              jsonContent.content_security_policy || "script-src 'self' 'unsafe-eval'; object-src 'self'"
+
             // If building for production (going to web store) abort early.
             // The browser extension store will hash your signing key and apply CSP policies.
             if (isProduction) {
+              jsonContent.content_security_policy = jsonContent.content_security_policy.replace(/'unsafe-eval'/, '')
+
               return getManifestJsonString(pluginOptions, jsonContent)
             }
-
-            jsonContent.content_security_policy =
-              jsonContent.content_security_policy || "script-src 'self' 'unsafe-eval'; object-src 'self'"
 
             if (hasKeyFile) {
               try {
