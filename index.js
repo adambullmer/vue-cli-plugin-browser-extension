@@ -52,7 +52,7 @@ module.exports = (api, options) => {
   api.chainWebpack((webpackConfig) => {
     // Ignore rewriting names for background and content scripts
     webpackConfig.output.filename((file) =>
-      userScripts.includes(file.chunk.name) || !isProduction ? 'js/[name].js' : 'js/[name].[contenthash:8].js'
+      userScripts.includes(file.chunk.name) || 'js/[name].js'
     )
     webpackConfig.merge({ entry })
 
