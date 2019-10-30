@@ -116,9 +116,7 @@ module.exports = (api, options) => {
 
   api.configureWebpack((webpackConfig) => {
     const omitUserScripts = ({ name }) => !userScripts.includes(name)
-    if (isProduction) {
-      webpackConfig.optimization.splitChunks.cacheGroups.vendors.chunks = omitUserScripts
-      webpackConfig.optimization.splitChunks.cacheGroups.common.chunks = omitUserScripts
-    }
+    webpackConfig.optimization.splitChunks.cacheGroups.vendors.chunks = omitUserScripts
+    webpackConfig.optimization.splitChunks.cacheGroups.common.chunks = omitUserScripts
   })
 }
