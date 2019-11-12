@@ -8,6 +8,7 @@ const manifestTransformer = require('./lib/manifest')
 const defaultOptions = {
   components: {},
   componentOptions: {},
+  extensionReloaderOptions: {},
   manifestSync: ['version'],
   modesToZip: ['production'],
   manifestTransformer: null
@@ -24,6 +25,7 @@ module.exports = (api, options) => {
     ? Object.assign(defaultOptions, options.pluginOptions.browserExtension)
     : defaultOptions
   const componentOptions = pluginOptions.componentOptions
+  const extensionReloaderOptions = pluginOptions.extensionReloaderOptions
   const packageJson = require(api.resolve('package.json'))
   const isProduction = api.service.mode === 'production'
   const keyFile = api.resolve('key.pem')
@@ -105,7 +107,7 @@ module.exports = (api, options) => {
     // configure webpack-extension-reloader for automatic reloading of extension when content and background scripts change (not HMR)
     // enabled only when webpack mode === 'development'
     if (!isProduction) {
-      webpackConfig.plugin('extension-reloader').use(ExtensionReloader, [{ entries }])
+      webpackConfig.plugin('extension-reloader').use(ExtensionReloader, [{ entries, ...extensionReloaderOptions }])
     }
 
     webpackConfig.plugin('copy').tap((args) => {

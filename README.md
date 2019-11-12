@@ -120,6 +120,12 @@ module.exports = {
 
   See [Component options](#component-options).
 
+- **extensionReloaderOptions**
+
+  - Type: `Object.<string, Object>`
+
+  See available options in [webpack-extension-reloader](https://github.com/rubenspgcavalcante/webpack-extension-reloader#how-to-use).
+
 - **manifestSync**
 
   - Type: `Array<string>`
