@@ -154,10 +154,7 @@ module.exports = {
 
 - **modesToZip**
 
-  - Type: `Array<string>`
-  - Default: `['production']`
-
-  Array containing names of mode in which zipping up will trigger after build.
+  Deprecated. Any mode will be zipped to the artifacts dir, when `NODE_ENV=production` (the default in the normal `yarn build`). For more information on how to set `NODE_ENV=production` in other modes see [Vue CLI docs – Example Staging Mode](https://cli.vuejs.org/guide/mode-and-env.html#example-staging-mode)
 
 - **artifactsDir**
 
