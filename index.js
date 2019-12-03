@@ -31,6 +31,10 @@ module.exports = (api, options) => {
   const hasKeyFile = keyExists(keyFile)
   const contentScriptEntries = Object.keys((componentOptions.contentScripts || {}).entries || {})
 
+  if (pluginOptions.modesToZip !== undefined) {
+    logger.warn('Deprecation Notice: setting NODE_ENV should be used in favored of options.modesToZip')
+  }
+
   const entry = {}
   const entries = {}
   if (componentOptions.background) {
