@@ -10,7 +10,6 @@ const defaultOptions = {
   componentOptions: {},
   extensionReloaderOptions: {},
   manifestSync: ['version'],
-  modesToZip: ['production'],
   manifestTransformer: null
 }
 const performanceAssetFilterList = [
@@ -27,7 +26,7 @@ module.exports = (api, options) => {
   const componentOptions = pluginOptions.componentOptions
   const extensionReloaderOptions = pluginOptions.extensionReloaderOptions
   const packageJson = require(api.resolve('package.json'))
-  const isProduction = api.service.mode === 'production'
+  const isProduction = process.env.NODE_ENV === 'production'
   const keyFile = api.resolve('key.pem')
   const hasKeyFile = keyExists(keyFile)
   const contentScriptEntries = Object.keys((componentOptions.contentScripts || {}).entries || {})
@@ -95,7 +94,7 @@ module.exports = (api, options) => {
       }
     }
 
-    if (pluginOptions.modesToZip.includes(api.service.mode)) {
+    if (isProduction) {
       webpackConfig.plugin('zip-browser-extension').use(ZipPlugin, [
         {
           path: api.resolve(pluginOptions.artifactsDir || 'artifacts'),
