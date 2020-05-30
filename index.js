@@ -55,9 +55,10 @@ module.exports = (api, options) => {
   const userScripts = Object.keys(entry)
 
   api.chainWebpack((webpackConfig) => {
+    const isLegacyBundle = process.env.VUE_CLI_MODERN_MODE && !process.env.VUE_CLI_MODERN_BUILD
     // Ignore rewriting names for background and content scripts
     webpackConfig.output.filename((file) =>
-      isProduction && options.filenameHashing && !userScripts.includes(file.chunk.name) ? 'js/[name].[contenthash:8].js' : 'js/[name].js'
+      `js/[name]${isLegacyBundle ? `-legacy` : ``}${isProduction && options.filenameHashing && !userScripts.includes(file.chunk.name) ? '.[contenthash:8]' : ''}.js`
     )
     webpackConfig.merge({ entry })
 
@@ -113,10 +114,12 @@ module.exports = (api, options) => {
       webpackConfig.plugin('extension-reloader').use(ExtensionReloader, [{ entries, ...extensionReloaderOptions }])
     }
 
-    webpackConfig.plugin('copy').tap((args) => {
-      args[0][0].ignore.push('browser-extension.html')
-      return args
-    })
+    if (webpackConfig.plugins.has('copy')) {
+      webpackConfig.plugin('copy').tap(args => {
+        args[0][0].ignore.push('browser-extension.html')
+        return args
+      })
+    }
   })
 
   api.configureWebpack((webpackConfig) => {
