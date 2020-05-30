@@ -1,6 +1,6 @@
 {
   "name": "vue-cli-plugin-browser-extension",
-  "version": "0.24.1",
+  "version": "0.24.2",
   "description": "Browser extension development plugin for vue-cli 3.0",
   "main": "index.js",
   "scripts": {
