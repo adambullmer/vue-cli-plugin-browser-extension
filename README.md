@@ -164,6 +164,36 @@ module.exports = {
 
   Directory where the zipped browser extension should get created.
 
+- **artifactFilename**
+
+  - Type: `Function`
+  - Default: ``({name, version, mode}) => `${name}-v${version}-${mode}.zip` ``
+
+  Optional function to generate a custom artifact filename. Useful for naming builds for different browsers.
+
+  The function takes a single object parameter containing:
+  - `name` - Name from `package.json`
+  - `version` - Version from `package.json`
+  - `mode` - Vue CLI mode such as 'production'
+  
+  For example,
+
+  ```js
+  // vue.config.js
+  module.exports = {
+    pluginOptions: {
+      browserExtension: {
+        artifactFilename: ({ name, version, mode }) => {
+          if (mode === 'production') {
+            return `${name}-v${version}-${process.env.BROWSER}.zip`;
+          }
+          return `${name}-v${version}-${process.env.BROWSER}-${mode}.zip`;
+        },
+      },
+    },
+  };
+  ```
+
 ### Component options
 
 Some browser extension components have additional options which can be set as follows:

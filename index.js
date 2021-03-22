@@ -100,10 +100,20 @@ module.exports = (api, options) => {
     }
 
     if (isProduction) {
+      let filename
+      if (pluginOptions.artifactFilename) {
+        filename = pluginOptions.artifactFilename({
+          name: packageJson.name,
+          version: packageJson.version,
+          mode: api.service.mode
+        })
+      } else {
+        filename = `${packageJson.name}-v${packageJson.version}-${api.service.mode}.zip`
+      }
       webpackConfig.plugin('zip-browser-extension').use(ZipPlugin, [
         {
           path: api.resolve(pluginOptions.artifactsDir || 'artifacts'),
-          filename: `${packageJson.name}-v${packageJson.version}-${api.service.mode}.zip`
+          filename: filename
         }
       ])
     }
