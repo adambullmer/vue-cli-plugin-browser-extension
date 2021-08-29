@@ -1,3 +1,4 @@
+/* eslint-disable */
 <%_ if (options.components.popup) { -%>
 browser.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 <%_ } else { -%>
@@ -11,3 +12,4 @@ browser.browserAction.onClicked.addListener(function (tab) {
   });
   <%_ } -%>
 })
+/* eslint-enable */
