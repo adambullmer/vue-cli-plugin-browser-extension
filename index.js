@@ -135,6 +135,13 @@ module.exports = (api, options) => {
         return args
       })
     }
+
+    webpackConfig.plugin('define').tap(args => [
+      {
+        ...args[0],
+        global: 'window'
+      },
+    ])
   })
 
   api.configureWebpack((webpackConfig) => {
