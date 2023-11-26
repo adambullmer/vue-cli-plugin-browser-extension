@@ -39,7 +39,11 @@ module.exports = (api, options) => {
   const entries = {}
   if (componentOptions.background) {
     entries.background = 'background'
-    entry.background = [api.resolve(componentOptions.background.entry)]
+    if (Array.isArray(componentOptions.background.entry)) {
+      entry.background = componentOptions.background.entry.map((entry) => api.resolve(entry))
+    } else {
+      entry.background = [api.resolve(componentOptions.background.entry)]
+    }
   }
   if (componentOptions.contentScripts) {
     entries.contentScript = contentScriptEntries
